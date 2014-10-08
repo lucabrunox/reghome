@@ -1,1 +1,1 @@
-[ "pg", "fibers", "express" ]
+[ "pg", "fibers", "express", "forever", "expandenv" ]

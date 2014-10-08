@@ -1,6 +1,8 @@
 {
-  "db": {
-	  "host": "/tmp",
-	  "database": "postgres"
-  }
+	"bindPort": 9090,
+	"staticDir": "./static",
+	"db": {
+		"host": "/tmp",
+		"database": "postgres"
+	}
 }

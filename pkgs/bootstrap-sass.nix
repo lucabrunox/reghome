@@ -15,8 +15,10 @@
     
     installPhase = ''
       ls
-      mkdir $out
-      mv assets/* $out
+      mkdir -p $out/share
+      mv assets/fonts $out/share/fonts
+      mv assets/stylesheets $out/share/scss
+      mv assets/javascripts $out/share/js
     '';
   };
     

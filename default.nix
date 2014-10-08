@@ -9,18 +9,30 @@ let
     hbaFile = ./services/postgres/pg_hba.conf;
     identFile = ./services/postgres/pg_ident.conf;
   };
- 
-  makeConfig = { projectName ? "registrocasa",
+
+  default = x: def: if x == null then def else x;
+  
+  makeConfig = { projectName ? "reghome",
                  flavor ? "dev",
+                 nginx ? pkgs.nginx,
+                 nginxConfigFile ? ./services/nginx/nginx.conf,
+                 nginxExtraFlags ? null,
                  postgresql ? pkgs.postgresql93,
-                 postgresDataDir ? "$HOME/.postgres/data",
+                 postgresDataDir ? null,
                  postgresFlags ? "",
-                 postgresPidFile ? "$HOME/.postgres/run/postgresql.pid",
                  postgresConfigFile ? defaultPostgresConfig }:
-               { inherit projectName flavor postgresql postgresConfigFile postgresFlags postgresDataDir postgresPidFile; };
+               {
+                 inherit projectName flavor
+                 nginx nginxConfigFile
+                 postgresql postgresConfigFile postgresFlags;
+                 nginxExtraFlags = default nginxExtraFlags "-p $HOME/.${projectName}/nginx";
+                 postgresDataDir = default postgresDataDir "$HOME/.${projectName}/postgres/data";
+               };
   config' = makeConfig config;
 
   backendPackages = callPackage ./pkgs/node-packages.nix { self = nodePackages // backendPackages; };
+
+  sassWrapper = callPackage ./pkgs/sass-wrapper { sass = rubyLibs.sass; };
 
   frontendPackages = {
     reactjs = callPackage ./pkgs/reactjs.nix { };
@@ -29,12 +41,10 @@ let
 
   frontendPackages' = lib.mapAttrs (_: value: value.${config'.flavor}) frontendPackages;
   
-  postgresql = pkgs.postgresql93;
-
 in with backendPackages; with frontendPackages;
 
 stdenv.mkDerivation ({
-  name = "${config'.projectName}-dev";
-  buildInputs = [ config'.postgresql rubyLibs.sass nodejs fibers pg ];
+  name = "${config'.projectName}-${config'.flavor}";
+  buildInputs = [ sassWrapper nodejs fibers pg expandenv forever express ] ++ lib.attrValues frontendPackages';
 
 } // config' // frontendPackages')
