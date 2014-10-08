@@ -1,5 +1,6 @@
 { pkgs ? (import <nixpkgs> {}), config ? {} }:
 
+with pkgs;
 let
 
   defaultPostgresConfig = pkgs.substituteAll {
@@ -18,13 +19,21 @@ let
                { inherit projectName postgresql postgresConfigFile postgresFlags postgresDataDir postgresPidFile; };
   config' = makeConfig config;
 
-  nodePackages = pkgs.nodePackages // (pkgs.callPackage ./pkgs/node-packages.nix { self = nodePackages; });
+  backendPackages = callPackage ./pkgs/node-packages.nix { self = nodePackages // backendPackages; });
+
+  frontendPackages = {
+    reactjs = callPackage ./pkgs/reactjs.nix { };
+  };
+  
   postgresql = pkgs.postgresql93;
 
-in with nodePackages; with pkgs;
-{
-  dev = stdenv.mkDerivation ({
-    name = "${config'.projectName}-dev";
-    buildInputs = [ config'.postgresql nodejs fibers pg by-version."bindings"."1.2.1" ];
-  } // config');
-}
+in with backendPackages; with frontendPackages;
+
+stdenv.mkDerivation ({
+  name = "${config'.projectName}-dev";
+  buildInputs = [ config'.postgresql nodejs fibers pg by-version."bindings"."1.2.1" ];
+
+  buildPhase = ''
+    
+  '';
+} // config' // backendPackages // frontendPackages);
