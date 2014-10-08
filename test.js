@@ -1,18 +1,47 @@
-var Fiber = require('fibers');
 var Future = require('fibers/future');
+var async = require('./lib/async.js');
 
-var pg = require('pg');
+var _pg = require('pg');
 var conString = "postgres://lethal:Line27@localhost/casa";
 
-var future = function() {
-   var ret = Future.wrap (pg.connect.bind(pg), "array") (conString).wait ();
-   console.log(ret);
-   return ret[1];
-}.future();
+wrapObject = function(obj, methods) {
+  var wrapCache = {};
+  var ret = {};
+  for (var i=0; i < methods.length; i++) {
+    var method = methods[i];
+    var wrapper;
+    if (typeof method == "string") {
+      wrapper = Future.wrap(obj[method].bind(obj));
+      ret[method] = function() { return wrapper.apply(null, arguments).wait(); };
+    } else {
+      wrapper = Future.wrap(obj[method[0]].bind(obj), "array");
+      ret[method[0]] = function (names) {
+        return function() {
+          var arr = wrapper.apply(null, arguments).wait();
+          var res = {};
+          for (var j=1; j < names.length; j++) {
+            res[names[j]] = arr[j-1];
+          }
+          return res;
+        }
+      }(method);
+    }
+  }
 
-future().resolve(function(err, done) { console.log(done); done(); });
+  return ret;
+};
 
-/*pg.connect(conString, function(err, client, done) {
+var pg = wrapObject(_pg, [["connect", "client", "done"]]);
+var app = Future.task(function() {
+  var conn = pg.connect(conString);
+  var client = wrapObject (conn.client, ["query"]);
+  var result = client.query('SELECT $1::int as number', ['1']);
+  console.log(result);
+  conn.done();
+}).detach();
+
+/*
+pg.connect(conString, function(err, client, done) {
   if(err) {
     return console.error('error fetching client from pool', err);
   }
@@ -24,6 +53,7 @@ future().resolve(function(err, done) { console.log(done); done(); });
       return console.error('error running query', err);
     }
     console.log(result.rows[0].number);
+    client.end();
     //output: 1
   });
 });*/
