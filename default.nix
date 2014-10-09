@@ -32,6 +32,8 @@ let
 
   backendPackages = callPackage ./pkgs/node-packages.nix { self = nodePackages // backendPackages; };
 
+  backendPackages' = lib.collect lib.isDerivation backendPackages;
+
   sassWrapper = callPackage ./pkgs/sass-wrapper { sass = rubyLibs.sass; };
 
   frontendPackages = {
@@ -48,7 +50,7 @@ let
     stdenv.mkDerivation {
       name = "${baseName}-${name}";
 
-      unpackPhase = "true";
+      phases = [ "installPhase" ];
       
       inherit propagatedBuildInputs;
       
@@ -61,15 +63,24 @@ let
   components = with backendPackages; with frontendPackages'; rec {
     
     css = buildComponent "css" [ sassWrapper bootstrap-sass ] ''
-      scss ${./assets/scss/main.scss}:$out/main.css
+      scss ${./client}/scss/main.scss:$out/main.css
     '';
-    
+
+    js = buildComponent "js" [ react-tools ] ''
+      jsx -x jsx ${./client}/js $out
+    '';
+
     static = buildComponent "static" [] ''
-      mkdir -p $out/css $out/js
-      ln -s ${css}/main.css $out/css/
-      ln -s -T ${./static/index.html} $out/index.html
-      ln -s ${bootstrap-sass}/share/js/bootstrap.js $out/js/
-      ln -s -T ${jquery} $out/js/jquery.js
+      mkdir -p $out/js/
+      ln -sv ${./client}/index.html $out/
+      ln -sv ${./client}/app.js $out/
+      ln -sv -T ${css} $out/css
+      ln -sv -T ${js} $out/js/client
+      ln -sv ${bootstrap-sass}/share/js/bootstrap.js $out/js/
+      ln -sv -T ${jquery} $out/js/jquery.js
+      ln -sv ${requirejs}/lib/node_modules/requirejs/require.js $out/js/
+      ln -sv ${react}/lib/node_modules/react/dist/react.js $out/js/
+      ln -sv -T ${react-router-component}/lib/node_modules/react-router-component/lib $out/js/react-router-component
     '';
     
   };
@@ -77,7 +88,7 @@ in with backendPackages;
 
 stdenv.mkDerivation ({
   name = "${baseName}";
-  buildInputs = [ sassWrapper nodejs requirejs fibers pg express forever components.static ] ++ lib.attrValues frontendPackages';
+  buildInputs = [ sassWrapper nodejs ] ++ backendPackages' ++ lib.attrValues frontendPackages';
 
   passthru = {
     inherit (components) static;

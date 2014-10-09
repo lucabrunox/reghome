@@ -1,1 +1,13 @@
-[ "pg", "fibers", "express", "forever", "expandenv", "requirejs" ]
+[
+	"pg",
+	"fibers",
+	"express",
+	"forever",
+	"expandenv",
+	"react-tools",
+	"node-jsx",
+	"browserify",
+	"react",
+	"react-async",
+	"react-router-component"
+]
