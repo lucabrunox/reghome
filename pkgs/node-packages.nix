@@ -1,7 +1,7 @@
 { self, fetchurl, fetchgit ? null, lib }:
 
 {
-  by-spec."accepts"."~1.1.0" =
+  by-spec."accepts"."~1.1.1" =
     self.by-version."accepts"."1.1.1";
   by-version."accepts"."1.1.1" = lib.makeOverridable self.buildNodePackage {
     name = "accepts-1.1.1";
@@ -674,15 +674,15 @@
   };
   "expandenv" = self.by-version."expandenv"."1.0.0";
   by-spec."express"."*" =
-    self.by-version."express"."4.9.5";
-  by-version."express"."4.9.5" = lib.makeOverridable self.buildNodePackage {
-    name = "express-4.9.5";
+    self.by-version."express"."4.9.6";
+  by-version."express"."4.9.6" = lib.makeOverridable self.buildNodePackage {
+    name = "express-4.9.6";
     bin = false;
     src = [
       (fetchurl {
-        url = "http://registry.npmjs.org/express/-/express-4.9.5.tgz";
-        name = "express-4.9.5.tgz";
-        sha1 = "7f62aa84ac8f5e96acfb98e2944dde0bf1cf8688";
+        url = "http://registry.npmjs.org/express/-/express-4.9.6.tgz";
+        name = "express-4.9.6.tgz";
+        sha1 = "0b3e3970784d9133c4335c299539e6d895dbb208";
       })
     ];
     buildInputs =
@@ -716,7 +716,7 @@
     ];
     passthru.names = [ "express" ];
   };
-  "express" = self.by-version."express"."4.9.5";
+  "express" = self.by-version."express"."4.9.6";
   by-spec."eyes"."0.1.x" =
     self.by-version."eyes"."0.1.8";
   by-version."eyes"."0.1.8" = lib.makeOverridable self.buildNodePackage {
@@ -2027,6 +2027,27 @@
     ];
     passthru.names = [ "request" ];
   };
+  by-spec."requirejs"."*" =
+    self.by-version."requirejs"."2.1.15";
+  by-version."requirejs"."2.1.15" = lib.makeOverridable self.buildNodePackage {
+    name = "requirejs-2.1.15";
+    bin = true;
+    src = [
+      (fetchurl {
+        url = "http://registry.npmjs.org/requirejs/-/requirejs-2.1.15.tgz";
+        name = "requirejs-2.1.15.tgz";
+        sha1 = "cbcfce55d584ae5983c00a20daa8eade37d18892";
+      })
+    ];
+    buildInputs =
+      (self.nativeDeps."requirejs" or []);
+    deps = {
+    };
+    peerDependencies = [
+    ];
+    passthru.names = [ "requirejs" ];
+  };
+  "requirejs" = self.by-version."requirejs"."2.1.15";
   by-spec."revalidator"."0.1.x" =
     self.by-version."revalidator"."0.1.8";
   by-version."revalidator"."0.1.8" = lib.makeOverridable self.buildNodePackage {
@@ -2117,7 +2138,7 @@
     ];
     passthru.names = [ "send" ];
   };
-  by-spec."serve-static"."~1.6.3" =
+  by-spec."serve-static"."~1.6.4" =
     self.by-version."serve-static"."1.6.4";
   by-version."serve-static"."1.6.4" = lib.makeOverridable self.buildNodePackage {
     name = "serve-static-1.6.4";
@@ -2283,7 +2304,7 @@
     ];
     passthru.names = [ "tunnel-agent" ];
   };
-  by-spec."type-is"."~1.5.1" =
+  by-spec."type-is"."~1.5.2" =
     self.by-version."type-is"."1.5.2";
   by-version."type-is"."1.5.2" = lib.makeOverridable self.buildNodePackage {
     name = "type-is-1.5.2";

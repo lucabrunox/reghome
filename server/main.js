@@ -1,5 +1,13 @@
-var Future = require('fibers/future');
-var fiberWrap = require('./fiberwrap');
+var requirejs = require('requirejs');
+
+requirejs.config({
+    //Pass the top-level main.js/index.js require
+    //function to requirejs so that node modules
+    //are loaded relative to the top-level JS file.
+    nodeRequire: require
+});
+
+requirejs(["fibers/future", "./fiberwrap.js"], function (Future, fiberWrap) {
 
 if (process.argv.length < 3) {
 	console.log ("Error: must specify a configuration");
@@ -32,3 +40,4 @@ Future.task(function() {
 }).detach();
 
 app.listen(config.bindPort);
+});

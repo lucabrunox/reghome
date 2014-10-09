@@ -77,7 +77,7 @@ in with backendPackages;
 
 stdenv.mkDerivation ({
   name = "${baseName}";
-  buildInputs = [ sassWrapper nodejs fibers pg express forever components.static ] ++ lib.attrValues frontendPackages';
+  buildInputs = [ sassWrapper nodejs requirejs fibers pg express forever components.static ] ++ lib.attrValues frontendPackages';
 
   passthru = {
     inherit (components) static;
