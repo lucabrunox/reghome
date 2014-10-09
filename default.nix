@@ -66,21 +66,15 @@ let
       scss ${./client}/scss/main.scss:$out/main.css
     '';
 
-    js = buildComponent "js" [ react-tools ] ''
-      jsx -x jsx ${./client}/js $out
+    js = buildComponent "js" ([ nodejs ] ++ backendPackages') ''
+      browserify -c jsx ${./client/js}/main.jsx > $out/bundle.js
     '';
 
-    static = buildComponent "static" [] ''
+    www = buildComponent "www" [] ''
       mkdir -p $out/js/
-      ln -sv ${./client}/index.html $out/
-      ln -sv ${./client}/app.js $out/
+      ln -sv -T ${./client/index.html} $out/index.html
       ln -sv -T ${css} $out/css
-      ln -sv -T ${js} $out/js/client
-      ln -sv ${bootstrap-sass}/share/js/bootstrap.js $out/js/
-      ln -sv -T ${jquery} $out/js/jquery.js
-      ln -sv ${requirejs}/lib/node_modules/requirejs/require.js $out/js/
-      ln -sv ${react}/lib/node_modules/react/dist/react.js $out/js/
-      ln -sv -T ${react-router-component}/lib/node_modules/react-router-component/lib $out/js/react-router-component
+      ln -sv ${js}/bundle.js $out/js/bundle.js
     '';
     
   };
@@ -90,8 +84,9 @@ stdenv.mkDerivation ({
   name = "${baseName}";
   buildInputs = [ sassWrapper nodejs ] ++ backendPackages' ++ lib.attrValues frontendPackages';
 
+  NODE_ENV = lib.optionalString (config'.flavor == "dev") "development";
   passthru = {
-    inherit (components) static;
+    inherit (components) www js css;
   };
   
 } // config' // frontendPackages')

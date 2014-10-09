@@ -10,7 +10,6 @@ var ReactAsync = require('react-async');
 var nodejsx = require('node-jsx').install({extension: '.jsx'});
 
 var App = require('../client/js/main.jsx');
-console.log(App);
 
 function renderApp(req, res, next) {
   var path = url.parse(req.url).pathname;

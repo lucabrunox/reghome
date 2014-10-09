@@ -4,15 +4,14 @@
 'use strict';
 
 var React = require('react');
-var Pages = require('react-router-component');
-var Page = require('react-router-component');
-var NotFound = require('react-router-component');
-var Link = require('react-router-component');
+var Router = require('react-router-component');
 
 /* var Pages       = ReactRouter.Pages; */
 /* var Page        = ReactRouter.Page; */
-/* var NotFound    = ReactRouter.NotFound; */
-/* var Link        = ReactRouter.Link; */
+var Locations = Router.Locations;
+var Location = Router.Location;
+var NotFound    = Router.NotFound;
+var Link        = Router.Link;
 
 var MainPage = React.createClass({
 
@@ -53,11 +52,11 @@ var App = React.createClass({
 
   render: function() {
     return (
-      <Pages className="App" path={this.props.path}>
-        <Page path="/" handler={MainPage} />
-        <Page path="/about" handler={AboutPage} />
+      <Locations>
+        <Location path="/" handler={MainPage} />
+        <Location path="/about" handler={AboutPage} />
         <NotFound handler={NotFoundHandler} />
-      </Pages>
+      </Locations>
     );
   }
   
@@ -67,6 +66,6 @@ module.exports = App;
 
 if (typeof window !== 'undefined') {
   window.onload = function() {
-	  React.renderComponent(App(), body);
+	  React.renderComponent(App(), document.body);
   }
 }
