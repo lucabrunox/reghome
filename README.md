@@ -8,8 +8,6 @@ Installation
 
 Install nix.
 
-Clone this repository.
-
 ```
 $ git clone https://github.com/lethalman/reghome.git
 $ cd reghome
