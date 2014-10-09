@@ -4,7 +4,7 @@
     
   dev = stdenv.mkDerivation rec {
     version = "3.2.0";
-    name = "bootstrap-${version}";
+    name = "bootstrap-sass-${version}";
 
     src = fetchurl {
       url = "https://github.com/twbs/bootstrap-sass/archive/v${version}.tar.gz";

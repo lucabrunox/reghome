@@ -37,14 +37,50 @@ let
   frontendPackages = {
     reactjs = callPackage ./pkgs/reactjs.nix { };
     bootstrap-sass = callPackage ./pkgs/bootstrap-sass.nix { };
+    jquery = callPackage ./pkgs/jquery.nix { };
   };
 
   frontendPackages' = lib.mapAttrs (_: value: value.${config'.flavor}) frontendPackages;
-  
-in with backendPackages; with frontendPackages;
+
+  baseName = "${config'.projectName}-${config'.flavor}";
+
+  buildComponent = name: propagatedBuildInputs: installCommands:
+    stdenv.mkDerivation {
+      name = "${baseName}-${name}";
+
+      unpackPhase = "true";
+      
+      inherit propagatedBuildInputs;
+      
+      installPhase = ''
+        mkdir $out
+        ${installCommands}
+      '';
+    };
+
+  components = with backendPackages; with frontendPackages'; rec {
+    
+    css = buildComponent "css" [ sassWrapper bootstrap-sass ] ''
+      scss ${./assets/scss/main.scss}:$out/main.css
+    '';
+    
+    static = buildComponent "static" [] ''
+      mkdir -p $out/css $out/js
+      ln -s ${css}/main.css $out/css/
+      ln -s -T ${./static/index.html} $out/index.html
+      ln -s ${bootstrap-sass}/share/js/bootstrap.js $out/js/
+      ln -s -T ${jquery} $out/js/jquery.js
+    '';
+    
+  };
+in with backendPackages;
 
 stdenv.mkDerivation ({
-  name = "${config'.projectName}-${config'.flavor}";
-  buildInputs = [ sassWrapper nodejs fibers pg expandenv forever express ] ++ lib.attrValues frontendPackages';
+  name = "${baseName}";
+  buildInputs = [ sassWrapper nodejs fibers pg express forever components.static ] ++ lib.attrValues frontendPackages';
 
+  passthru = {
+    inherit (components) static;
+  };
+  
 } // config' // frontendPackages')
