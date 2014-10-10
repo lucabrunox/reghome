@@ -23,7 +23,6 @@ $ webpack
 Start the services:
 	
 ```
-$ services/postgres/init.sh start
 $ mkdir -p ~/.reghome/nginx/logs
 $ services/nginx/init.sh
 $ node server/main.js $(pwd)/config.js
