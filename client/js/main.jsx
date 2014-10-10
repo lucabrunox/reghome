@@ -6,12 +6,10 @@
 var React = require('react');
 var Router = require('react-router-component');
 
-/* var Pages       = ReactRouter.Pages; */
-/* var Page        = ReactRouter.Page; */
 var Locations = Router.Locations;
 var Location = Router.Location;
-var NotFound    = Router.NotFound;
-var Link        = Router.Link;
+var NotFound = Router.NotFound;
+var Link = Router.Link;
 
 var MainPage = React.createClass({
 

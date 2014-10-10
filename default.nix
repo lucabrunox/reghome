@@ -76,6 +76,21 @@ let
       ln -sv -T ${css} $out/css
       ln -sv ${js}/bundle.js $out/js/bundle.js
     '';
+
+    node_modules = buildEnv {
+      name = "${baseName}-node_modules";
+
+      paths = backendPackages';
+
+      pathsToLink = [ "/lib/node_modules" ];
+
+      postBuild = ''
+        mv $out tmp
+        mv tmp/lib/node_modules $out
+      '';
+
+      ignoreCollisions = true;
+    };
     
   };
 in with backendPackages;
@@ -85,8 +100,6 @@ stdenv.mkDerivation ({
   buildInputs = [ sassWrapper nodejs ] ++ backendPackages' ++ lib.attrValues frontendPackages';
 
   NODE_ENV = lib.optionalString (config'.flavor == "dev") "development";
-  passthru = {
-    inherit (components) www js css;
-  };
+  passthru = components;
   
 } // config' // frontendPackages')

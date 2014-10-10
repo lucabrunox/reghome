@@ -5,8 +5,11 @@
 	"forever",
 	"expandenv",
 	"react-tools",
+	"jsx",
 	"node-jsx",
-	"browserify",
+	"webpack",
+	"json-loader",
+	"jsx-loader",
 	"react",
 	"react-async",
 	"react-router-component"
