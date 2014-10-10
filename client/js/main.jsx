@@ -3,6 +3,9 @@
  */
 'use strict';
 
+require('../scss/main.scss');
+require('../index.html');
+
 var React = require('react');
 var Router = require('react-router-component');
 

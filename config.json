@@ -1,6 +1,6 @@
 {
 	"bindPort": 9090,
-	"staticDir": "./result",
+	"staticDir": "./dist",
 	"db": {
 		"host": "/tmp",
 		"database": "postgres"
