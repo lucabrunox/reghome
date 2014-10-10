@@ -6,7 +6,7 @@ Simple home cash double entry
 Installation
 -----------
 
-Install nix.
+Install [Nix](www.nixos.org/nix).
 
 ```
 $ git clone https://github.com/lethalman/reghome.git
