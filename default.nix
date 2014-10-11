@@ -38,13 +38,11 @@ let
 
   depsEnv = buildEnv {
     name = "${baseName}-deps";
-        
     paths = depsList;
-        
     ignoreCollisions = true;
   };
     
-in with deps;
+in
 
 stdenv.mkDerivation ({
   name = "${baseName}";
