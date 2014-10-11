@@ -9,6 +9,8 @@ require('../index.html');
 require('script!jquery');
 require('bootstrap');
 
+var JournalPage = require('./journal.jsx');
+
 var React = require('react');
 var Router = require('react-router-component');
 
@@ -66,6 +68,7 @@ var App = React.createClass({
     <div className="collapse navbar-collapse">
       <ul className="nav navbar-nav">
         <li><Link href="/balance">Balance</Link></li>
+        <li><Link href="/journal">Journal</Link></li>
       </ul>
       <form className="navbar-form navbar-left form-inline" role="search">
         <div className="form-group">
@@ -79,6 +82,7 @@ var App = React.createClass({
 <Locations>
 	<Location path="/" handler={MainPage} />
 	<Location path="/balance" handler={BalancePage} />
+	<Location path="/journal" handler={JournalPage} />
 	<NotFound handler={NotFoundHandler} />
 </Locations>
 </div>			
