@@ -4,6 +4,7 @@
 'use strict';
 
 var React = require('react');
+var ErrorGuard = require('./error.jsx');
 
 var JournalPage = React.createClass({
 	getInitialState: function() {
@@ -28,15 +29,13 @@ var JournalPage = React.createClass({
 	},
 	
   render: function() {
-		if (this.state.error) {
-			return <div className="alert alert-danger" role="alert">{this.state.error}</div>
-		};
-		
     return (
+			<ErrorGuard error={this.state.error}>
       <div>
         <h1>Journal</h1>
 				{this.state.data}
       </div>
+			</ErrorGuard>
     );
   }
 
