@@ -5,6 +5,9 @@
 
 require('../scss/main.scss');
 require('../index.html');
+/* require('bootstrap-sass/assets/javascripts/bootstrap.js'); */
+require('script!jquery');
+require('bootstrap');
 
 var React = require('react');
 var Router = require('react-router-component');
@@ -20,19 +23,19 @@ var MainPage = React.createClass({
     return (
       <div className="MainPage">
         <h1>Hello, anonymous!</h1>
-        <p><Link href="/about">Login</Link></p>
+        <p><Link href="/login">Login</Link></p>
       </div>
     );
   }
 
 });
 
-var AboutPage = React.createClass({
+var BalancePage = React.createClass({
 
   render: function() {
     return (
-      <div className="AboutPage">
-        <h1>About...</h1>
+      <div>
+        <h1>Balance</h1>
       </div>
     );
   }
@@ -53,11 +56,32 @@ var App = React.createClass({
 
   render: function() {
     return (
-      <Locations>
-        <Location path="/" handler={MainPage} />
-        <Location path="/about" handler={AboutPage} />
-        <NotFound handler={NotFoundHandler} />
-      </Locations>
+<div className="container">
+<nav className="navbar navbar-default" role="navigation">
+  <div className="container-fluid">
+    <div className="navbar-header">
+      <Link href="/" className="navbar-brand">Dashboard</Link>
+    </div>
+
+    <div className="collapse navbar-collapse">
+      <ul className="nav navbar-nav">
+        <li><Link href="/balance">Balance</Link></li>
+      </ul>
+      <form className="navbar-form navbar-left form-inline" role="search">
+        <div className="form-group">
+          <input type="text" className="form-control" placeholder="Search"/>
+        </div>&nbsp;
+        <button type="submit" className="btn btn-default">Submit</button>
+      </form>
+    </div>
+  </div>
+</nav>
+<Locations>
+	<Location path="/" handler={MainPage} />
+	<Location path="/balance" handler={BalancePage} />
+	<NotFound handler={NotFoundHandler} />
+</Locations>
+</div>			
     );
   }
   

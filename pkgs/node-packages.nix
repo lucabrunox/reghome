@@ -1167,15 +1167,15 @@
     passthru.names = [ "director" ];
   };
   by-spec."domain-browser"."^1.1.1" =
-    self.by-version."domain-browser"."1.1.2";
-  by-version."domain-browser"."1.1.2" = lib.makeOverridable self.buildNodePackage {
-    name = "domain-browser-1.1.2";
+    self.by-version."domain-browser"."1.1.3";
+  by-version."domain-browser"."1.1.3" = lib.makeOverridable self.buildNodePackage {
+    name = "domain-browser-1.1.3";
     bin = false;
     src = [
       (fetchurl {
-        url = "http://registry.npmjs.org/domain-browser/-/domain-browser-1.1.2.tgz";
-        name = "domain-browser-1.1.2.tgz";
-        sha1 = "5a21f30a29a9891533915061426974dc2f14e56b";
+        url = "http://registry.npmjs.org/domain-browser/-/domain-browser-1.1.3.tgz";
+        name = "domain-browser-1.1.3.tgz";
+        sha1 = "ee8b336f1c53dc990b302eac12b4c7fee24923c1";
       })
     ];
     buildInputs =
@@ -2502,6 +2502,27 @@
     ];
     passthru.names = [ "jade" ];
   };
+  by-spec."jquery"."*" =
+    self.by-version."jquery"."2.1.1";
+  by-version."jquery"."2.1.1" = lib.makeOverridable self.buildNodePackage {
+    name = "jquery-2.1.1";
+    bin = false;
+    src = [
+      (fetchurl {
+        url = "http://registry.npmjs.org/jquery/-/jquery-2.1.1.tgz";
+        name = "jquery-2.1.1.tgz";
+        sha1 = "828fc60f50f7ee5983363ef4eb01c5f70af4bd5b";
+      })
+    ];
+    buildInputs =
+      (self.nativeDeps."jquery" or []);
+    deps = {
+    };
+    peerDependencies = [
+    ];
+    passthru.names = [ "jquery" ];
+  };
+  "jquery" = self.by-version."jquery"."2.1.1";
   by-spec."json-loader"."*" =
     self.by-version."json-loader"."0.5.1";
   by-version."json-loader"."0.5.1" = lib.makeOverridable self.buildNodePackage {
@@ -3304,7 +3325,7 @@
       "constants-browserify-0.0.1" = self.by-version."constants-browserify"."0.0.1";
       "os-browserify-0.1.2" = self.by-version."os-browserify"."0.1.2";
       "path-browserify-0.0.0" = self.by-version."path-browserify"."0.0.0";
-      "domain-browser-1.1.2" = self.by-version."domain-browser"."1.1.2";
+      "domain-browser-1.1.3" = self.by-version."domain-browser"."1.1.3";
       "querystring-es3-0.2.1-0" = self.by-version."querystring-es3"."0.2.1-0";
       "timers-browserify-1.1.0" = self.by-version."timers-browserify"."1.1.0";
       "stream-browserify-1.0.0" = self.by-version."stream-browserify"."1.0.0";
@@ -4154,6 +4175,26 @@
     ];
     passthru.names = [ "range-parser" ];
   };
+  by-spec."raw-loader"."0.5.x" =
+    self.by-version."raw-loader"."0.5.1";
+  by-version."raw-loader"."0.5.1" = lib.makeOverridable self.buildNodePackage {
+    name = "raw-loader-0.5.1";
+    bin = false;
+    src = [
+      (fetchurl {
+        url = "http://registry.npmjs.org/raw-loader/-/raw-loader-0.5.1.tgz";
+        name = "raw-loader-0.5.1.tgz";
+        sha1 = "0c3d0beaed8a01c966d9787bf778281252a979aa";
+      })
+    ];
+    buildInputs =
+      (self.nativeDeps."raw-loader" or []);
+    deps = {
+    };
+    peerDependencies = [
+    ];
+    passthru.names = [ "raw-loader" ];
+  };
   by-spec."react"."*" =
     self.by-version."react"."0.11.2";
   by-version."react"."0.11.2" = lib.makeOverridable self.buildNodePackage {
@@ -4525,6 +4566,28 @@
     passthru.names = [ "sass-loader" ];
   };
   "sass-loader" = self.by-version."sass-loader"."0.2.0";
+  by-spec."script-loader"."*" =
+    self.by-version."script-loader"."0.6.0";
+  by-version."script-loader"."0.6.0" = lib.makeOverridable self.buildNodePackage {
+    name = "script-loader-0.6.0";
+    bin = false;
+    src = [
+      (fetchurl {
+        url = "http://registry.npmjs.org/script-loader/-/script-loader-0.6.0.tgz";
+        name = "script-loader-0.6.0.tgz";
+        sha1 = "7f53102e05bcabb6ca24ca18fbcee1674554f495";
+      })
+    ];
+    buildInputs =
+      (self.nativeDeps."script-loader" or []);
+    deps = {
+      "raw-loader-0.5.1" = self.by-version."raw-loader"."0.5.1";
+    };
+    peerDependencies = [
+    ];
+    passthru.names = [ "script-loader" ];
+  };
+  "script-loader" = self.by-version."script-loader"."0.6.0";
   by-spec."send"."0.9.3" =
     self.by-version."send"."0.9.3";
   by-version."send"."0.9.3" = lib.makeOverridable self.buildNodePackage {

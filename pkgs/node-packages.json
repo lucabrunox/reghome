@@ -12,6 +12,8 @@
 	"json-loader",
 	"file-loader",
 	"url-loader",
+	"script-loader",
+	"jquery",
 	"sass-loader",
 	"jsx-loader",
 	"style-loader",

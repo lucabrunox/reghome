@@ -4,11 +4,13 @@ console.log("Node modules: ", nodes);
 
 module.exports = {
 	context: __dirname,
-	entry: "./client/js/main.jsx",
+	entry: {
+		app: "./client/js/main.jsx",
+	},
 
 	output: {
 		path: __dirname + "/dist/",
-		filename: "bundle.js",
+		filename: "[name].js",
 		publicPath: "/assets/"
 	},
 
@@ -16,7 +18,7 @@ module.exports = {
 		loaders: [
 			{ test: /\.jsx$/, loader: "jsx" },
 			{ test: /\.scss$/, loader: "style!css!sass?outputStyle=expanded&includePaths[]=" + (path.join(nodes, "bootstrap-sass/assets/stylesheets/"))  },
-			{ test: /\.woff$/, loader: "url?limit=10000&minetype=application/font-woff" },
+			{ test: /\.woff$/, loader: "url?limit=10000&mimetype=application/font-woff" },
 			{ test: /\.ttf$/, loader: "file" },
 			{ test: /\.eot$/, loader: "file" },
 			{ test: /\.svg$/, loader: "file" },
@@ -25,10 +27,15 @@ module.exports = {
 	},
 
 	resolve: {
-		modulesDirectories: [ nodes ],
+		modulesDirectories: [
+			nodes,
+			path.join(nodes, "bootstrap-sass/assets/javascripts"),
+			path.join(nodes, "jquery/dist"),
+		],
 	},
 	
 	resolveLoader: {
 		root: [ nodes ]
-	}
+	},
+
 }

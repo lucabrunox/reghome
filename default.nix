@@ -39,6 +39,7 @@ let
   depsEnv = buildEnv {
     name = "${baseName}-deps";
     paths = depsList;
+    pathsToLink = [ "/lib/node_modules" ];
     ignoreCollisions = true;
   };
     
