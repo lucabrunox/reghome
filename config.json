@@ -3,6 +3,6 @@
 	"staticDir": "./dist",
 	"db": {
 		"host": "/tmp",
-		"database": "postgres"
+		"database": "casa"
 	}
 }

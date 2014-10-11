@@ -58,8 +58,8 @@ var App = React.createClass({
 
   render: function() {
     return (
-<div className="container">
-<nav className="navbar navbar-default" role="navigation">
+<div className="container main">
+<nav className="navbar navbar-default navbar-fixed-top" role="navigation">
   <div className="container-fluid">
     <div className="navbar-header">
       <Link href="/" className="navbar-brand">Dashboard</Link>
@@ -79,6 +79,7 @@ var App = React.createClass({
     </div>
   </div>
 </nav>
+
 <Locations>
 	<Location path="/" handler={MainPage} />
 	<Location path="/balance" handler={BalancePage} />
