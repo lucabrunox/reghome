@@ -18,6 +18,18 @@ function wrapdb(res, f) {
 	});
 }
 
+function makepager(q, count) {
+	var page = parseInt(q.page);
+	if (!(page > 1)) {
+		page = 1;
+	}
+	
+	return {
+		page: page,
+		count: count,
+	}
+}
+
 var app = express();
 
 app.enable('trust proxy');
@@ -26,7 +38,7 @@ app.use("/assets", express.static (config.staticDir));
 
 app.get("/api/journal", function(req, res, next) {
 		wrapdb(res, function (db) {
-			var data = db.journal ();
+			var data = db.journal (makepager (req.query, 10));
 			return data;
 		});
 });

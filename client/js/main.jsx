@@ -8,16 +8,16 @@ require('../index.html');
 /* require('bootstrap-sass/assets/javascripts/bootstrap.js'); */
 require('script!jquery');
 require('bootstrap');
+var querystring = require('querystring');
 
 var JournalPage = require('./journal.jsx');
 
 var React = require('react');
-var Router = require('react-router-component');
+var SimpleRouter = require('./router.jsx');
 
-var Locations = Router.Locations;
-var Location = Router.Location;
-var NotFound = Router.NotFound;
-var Link = Router.Link;
+var Router = SimpleRouter.Router;
+var Route = SimpleRouter.Route;
+var Link = SimpleRouter.Link;
 
 var MainPage = React.createClass({
 
@@ -57,6 +57,8 @@ var NotFoundHandler = React.createClass({
 var App = React.createClass({
 
   render: function() {
+		var qs = querystring.decode(location.search.slice(1));
+		
     return (
 <div className="container main">
 <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -73,19 +75,16 @@ var App = React.createClass({
       <form className="navbar-form navbar-left form-inline" role="search">
         <div className="form-group">
           <input type="text" className="form-control" placeholder="Search"/>
-        </div>&nbsp;
-        <button type="submit" className="btn btn-default">Submit</button>
+        </div>
       </form>
     </div>
   </div>
 </nav>
 
-<Locations>
-	<Location path="/" handler={MainPage} />
-	<Location path="/balance" handler={BalancePage} />
-	<Location path="/journal" handler={JournalPage} />
-	<NotFound handler={NotFoundHandler} />
-</Locations>
+<Router>
+	<Route path="^$"><MainPage /></Route>
+	<Route path="^journal$"><JournalPage /></Route>
+</Router>
 </div>			
     );
   }

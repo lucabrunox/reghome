@@ -15,8 +15,8 @@ var DB = function(conn) {
 };
 
 DB.prototype = {
-	journal: function() {
-			var q = this.conn.query('SELECT * from libro');
+	journal: function(pager) {
+			var q = this.conn.query('SELECT * from partita order by data desc offset '+((pager.page-1)*pager.count)+' limit '+(pager.count));
 			return q.rows;
 	},
 };
