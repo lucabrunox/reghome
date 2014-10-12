@@ -6,6 +6,7 @@
 var React = require('react');
 var SimpleRouter = require('./router.jsx');
 var ErrorGuard = require('./error.jsx');
+var Editable = require('./editable.jsx');
 var ResultGuard = require('./emptyres.jsx');
 var Pager = require('./pager.jsx');
 var Loader = require('./loader.jsx');
@@ -13,61 +14,47 @@ var Util = require('./util.js');
 var querystring = require('querystring');
 
 var Link = SimpleRouter.Link;
+var EInput = Editable.Input;
 
 var JournalEntry = React.createClass({
-	getInitialState: function() {
-		return {
-			editingDebit: false,
-		};
+	onDebitSave: function(val) {
+		console.log ("debit save", val);
+	},
+
+	onCreditSave: function(val) {
+		console.log ("credit save", val);
+	},
+
+	onNotesSave: function(val) {
+		console.log ("notes save", val);
 	},
 	
-	editDebit: function() {
-		this.setState ({ editingDebit: true });
-	},
-
-	componentDidUpdate: function() {
-		if (this.state.editingDebit) {
-			$(this.refs.editInput.getDOMNode()).focus();
-		}
-	},
-
-	handleBlur: function() {
-		this.setState ({ editingDebit: false });
-	},
-	
-	handleSave: function(e) {
-		e.preventDefault();
-		var val = $(this.refs.editInput.getDOMNode()).val();
-		
-		this.setState ({ editingDebit: false });
-	},
-
 	render: function() {
 		var data = this.props.data;
 		var ledgerHref = "/ledger/"+data.conto_id;
-		var debitTd;
-		if (!this.state.editingDebit) {
-			debitTd = <td onClick={this.editDebit} className="col-md-2">{data.dare}</td>;
-		} else {
-			debitTd = (
-				<form className="form-inline" onSubmit={this.handleSave} role="form">
-				<div className="form-group">
-					<div className="input-group">
-						<span className="input-group-addon">&euro;</span>
-						<input onBlur={this.handleBlur} ref="editInput" type="text" className="form-control" defaultValue={data.dare.substring(1).trim()} />
-						<span onMouseDown={this.handleSave} className="input-group-addon btn-default glyphicon glyphicon-ok" />
-					</div>
-				</div>
-				</form>
-			);
-		}
+		var preInput = <span className="input-group-addon">&euro;</span>;
+		var dare = data.dareval == 0 ? <span className="text-muted">-</span> : data.dare;
+		var avere = data.avereval == 0 ? <span className="text-muted">-</span> : data.avere;
+		var note = data.note ? data.note : <span className="text-muted">-</span>;
 		
 		return (
 			<tr>
 		  <td className="col-md-3"><Link href={ledgerHref}>{data.conto_nome}</Link></td>
-			{debitTd}
-			<td className="col-md-2">{data.avere}</td>
-			<td className="col-md-5">{data.note}</td>
+			<td className="col-md-2">
+				<EInput className="form-control" defaultValue={data.dare.substring(1).trim()} onSave={this.onDebitSave} preInput={preInput}>
+					{dare}
+				</EInput>
+			</td>
+			<td className="col-md-2">
+			  <EInput className="form-control" defaultValue={data.avere.substring(1).trim()} onSave={this.onCreditSave} preInput={preInput}>
+					{avere}
+				</EInput>
+			</td>
+			<td className="col-md-5">
+			  <EInput className="form-control" defaultValue={data.note} onSave={this.onNotesSave}>
+					{note}
+				</EInput>
+			</td>
 			</tr>
 		);
 	}
