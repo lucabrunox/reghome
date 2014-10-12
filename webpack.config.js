@@ -23,11 +23,13 @@ module.exports = {
 			{ test: /\.eot$/, loader: "file" },
 			{ test: /\.svg$/, loader: "file" },
 			{ test: /\.html$/, loader: "file?name=index.html" },
+			{ test: /\.gif$/, loader: "file?name=[name].gif" },
 		],
 	},
 
 	resolve: {
 		modulesDirectories: [
+			path.join (__dirname, "client/"),
 			nodes,
 			path.join(nodes, "bootstrap-sass/assets/javascripts"),
 			path.join(nodes, "jquery/dist"),

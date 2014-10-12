@@ -3,15 +3,14 @@
  */
 'use strict';
 
-require('../scss/main.scss');
-require('../index.html');
+require('css/main.scss');
+require('index.html');
 /* require('bootstrap-sass/assets/javascripts/bootstrap.js'); */
 require('script!jquery');
 require('bootstrap');
 var querystring = require('querystring');
 
 var JournalPage = require('./journal.jsx');
-
 var React = require('react');
 var SimpleRouter = require('./router.jsx');
 
@@ -32,12 +31,12 @@ var MainPage = React.createClass({
 
 });
 
-var BalancePage = React.createClass({
+var LedgerPage = React.createClass({
 
   render: function() {
     return (
       <div>
-        <h1>Balance</h1>
+        <h1>Ledger</h1>
       </div>
     );
   }
@@ -69,8 +68,8 @@ var App = React.createClass({
 
     <div className="collapse navbar-collapse">
       <ul className="nav navbar-nav">
-        <li><Link href="/balance">Balance</Link></li>
         <li><Link href="/journal">Journal</Link></li>
+        <li><Link href="/ledger">Ledger</Link></li>
       </ul>
       <form className="navbar-form navbar-left form-inline" role="search">
         <div className="form-group">

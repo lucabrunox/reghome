@@ -43,7 +43,7 @@ DB.prototype = {
 
 	journalEntries: function(id) {
 		var id = toInt(id);
-		var q = this.conn.query('SELECT riga.* from riga WHERE riga.partita = '+id+' ORDER BY riga.dare DESC, riga.avere');
+		var q = this.conn.query('SELECT conto.id as conto_id, conto.nome as conto_nome, riga.* FROM riga JOIN conto ON (conto.id = riga.conto) WHERE riga.partita = '+id+' ORDER BY riga.dare DESC, riga.avere');
 		return q.rows;
 	},
 };
