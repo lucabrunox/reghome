@@ -20,12 +20,20 @@ body {
 }
 
 .table-hover tbody tr:hover > td {
-  cursor: hand
+  cursor: hand;
 }
 
 .table-nested {
 	@extend .table;
 	margin-bottom: 0;
+}
+
+.table-nested tbody tr:hover > td {
+  cursor: default;
+}
+
+.table-nested tbody tr:hover:first-child > td {
+  cursor: hand;
 }
 
 .table > tbody > tr > td.td-nested {

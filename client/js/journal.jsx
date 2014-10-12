@@ -60,7 +60,7 @@ var JournalDate = React.createClass({
 
 			return (
 				<tr><td colSpan="2" className="col-md-12 td-nested">
-				  <table className="table-nested table-striped table-hover table-condensed">
+				  <table className="table-nested table-striped table-condensed">
 					{head}
 					{rows}
 					</table>
