@@ -38,7 +38,14 @@ app.use("/assets", express.static (config.staticDir));
 
 app.get("/api/journal", function(req, res, next) {
 		wrapdb(res, function (db) {
-			var data = db.journal (makepager (req.query, 10));
+			var data = db.journal ({ page: req.query.page, count: 10 });
+			return data;
+		});
+});
+
+app.get("/api/journal/:id", function(req, res, next) {
+		wrapdb(res, function (db) {
+			var data = db.journalEntries (req.params.id);
 			return data;
 		});
 });

@@ -8,6 +8,26 @@ pgMethods = [
 	["connect", ["client", pgClientMethods], "done"]
 ];
 
+function sanitizePager(pager) {
+	var page = parseInt(pager.page);
+	if (!(page > 1)) {
+		page = 1;
+	}
+	
+	return {
+		page: page,
+		count: pager.count,
+	}
+}
+
+function toInt (x, d) {
+	var i = parseInt(x);
+	if (isNaN(i)) {
+		return d || 0;
+	}
+	return i;
+}
+
 var pg = fiberWrap(_pg, pgMethods);
 
 var DB = function(conn) {
@@ -16,8 +36,15 @@ var DB = function(conn) {
 
 DB.prototype = {
 	journal: function(pager) {
-			var q = this.conn.query('SELECT * from partita order by data desc offset '+((pager.page-1)*pager.count)+' limit '+(pager.count));
-			return q.rows;
+		var pager = sanitizePager (pager);
+		var q = this.conn.query('SELECT * from partita order by data desc offset '+((pager.page-1)*pager.count)+' limit '+(pager.count));
+		return q.rows;
+	},
+
+	journalEntries: function(id) {
+		var id = toInt(id);
+		var q = this.conn.query('SELECT riga.* from riga WHERE riga.partita = '+id+' ORDER BY riga.dare DESC, riga.avere');
+		return q.rows;
 	},
 };
 

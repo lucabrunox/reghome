@@ -1,11 +1,15 @@
 querystring = require("querystring");
 
 module.exports = {
-	ajaxState: function(url) {
+	ajaxState: function(url, cb) {
 		$.ajax({
 				url: url,
 				dataType: 'json',
 				success: function(data) {
+					var data = data;
+					if (cb) {
+						cb(data);
+					}
 					this.setState(data);
 				}.bind(this),
 				error: function(xhr, status, err) {

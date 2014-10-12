@@ -22,3 +22,12 @@ body {
 .table-hover tbody tr:hover > td {
   cursor: hand
 }
+
+.table-nested {
+	@extend .table;
+	margin-bottom: 0;
+}
+
+.table > tbody > tr > td.td-nested {
+	padding: 0;
+}
