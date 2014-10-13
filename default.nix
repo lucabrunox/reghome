@@ -41,7 +41,7 @@ let
           services.nginx.enable = true;
           services.nginx.stateDir = "${config'.dataDir}/nginx";
           services.nginx.user = builtins.getEnv "USER";
-          services.nginx.group = builtins.getEnv "USER";
+          services.nginx.group = "";
           services.nginx.httpConfig = ''
           	server {
               listen 0.0.0.0:8080;
