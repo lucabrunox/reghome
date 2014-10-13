@@ -37,7 +37,7 @@ var JournalEntry = React.createClass({
 		this.props.onChange (data);
 	},
 
-	onContoSave: function(val) {
+	onAccountSave: function(val) {
 		console.log(val);
 	},
 	
@@ -54,7 +54,7 @@ var JournalEntry = React.createClass({
 		return (
 			<tr>
 		  <td className="col-md-3">
-			  <ECombo placeholder="Account name" options={["foo", "bar", "baz"]} maxVisible={2} onSave={this.onAccountSave}>
+			  <ECombo placeholder="Account name" options={["foo", "bar", "baz"]} maxVisible={2} onSelected={this.onAccountSave}>
 			    <Link href={ledgerHref}>{data.conto_nome}</Link>
 				</ECombo>
 			</td>

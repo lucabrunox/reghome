@@ -12,15 +12,24 @@ var Combo = React.createClass({
 		return { editing: false };
 	},
 
-	componentDidMount: function() {
+	componentDidUpdate: function() {
+		if (this.state.editing) {
+			var self = this;
+			$(this.refs.combo.getDOMNode()).find("input").focus().keydown(function(e) {
+					if (e.keyCode == 27) {
+						self.setState ({ editing: false });
+					}
+			});
+		}
 	},
 
 	handleEdit: function() {
 		this.setState ({ editing: true });
 	},
 	
-	handleSelected: function() {
+	handleSelected: function(val) {
 		this.setState ({ editing: false });
+		this.props.onSelected (val);
 	},
 	
 	render: function() {
