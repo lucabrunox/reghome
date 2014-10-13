@@ -18,7 +18,7 @@ module.exports = {
 		loaders: [
 			{ test: /\.jsx$/, loader: "jsx" },
 			{ test: /react-typeahead/, loader: "jsx" },
-			{ test: /\.scss$/, loader: "style!css!sass?outputStyle=expanded&includePaths[]=" + (path.join(nodes, "bootstrap-sass/assets/stylesheets/"))  },
+			{ test: /\.scss$/, loader: "style!css!sass?precision=10&outputStyle=expanded&includePaths[]=" + (path.join(nodes, "bootstrap-sass/assets/stylesheets/"))  },
 			{ test: /\.woff$/, loader: "url?limit=10000&mimetype=application/font-woff" },
 			{ test: /\.ttf$/, loader: "file" },
 			{ test: /\.eot$/, loader: "file" },

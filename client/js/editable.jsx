@@ -19,6 +19,13 @@ var Combo = React.createClass({
 					if (e.keyCode == 27) {
 						self.setState ({ editing: false });
 					}
+			}).blur(function() {
+					// ugly hack
+					setTimeout(function() {
+							if (self.state.editing) {
+								self.setState ({ editing: false });
+							}
+					}, 150);
 			});
 		}
 	},
