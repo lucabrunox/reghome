@@ -13,6 +13,7 @@ var querystring = require('querystring');
 var JournalPage = require('./journal.jsx');
 var React = require('react');
 var SimpleRouter = require('./router.jsx');
+var Calculator = require('./calc.jsx');
 
 var Router = SimpleRouter.Router;
 var Route = SimpleRouter.Route;
@@ -76,13 +77,14 @@ var App = React.createClass({
           <input type="text" className="form-control" placeholder="Search"/>
         </div>
       </form>
+			<Calculator className="navbar-form navbar-right" key="calculator" />
     </div>
   </div>
 </nav>
 
 <Router>
-	<Route path="^$"><MainPage /></Route>
-	<Route path="^journal$"><JournalPage /></Route>
+	<Route path="^$"><MainPage key="mainpage" /></Route>
+	<Route path="^journal$"><JournalPage key="journalpage" /></Route>
 </Router>
 </div>			
     );

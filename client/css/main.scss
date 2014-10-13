@@ -48,3 +48,12 @@ body {
 	@include transition(background-color 1s ease);
   background-color: $state-danger-bg !important;
 }
+
+.calc-result {
+	min-width: 6em;
+	display: inline-block;
+	margin-top: 0.1px;
+	margin-bottom: 0;
+	padding: 6 6 6 6;
+	min-height: 20.4px;
+}
