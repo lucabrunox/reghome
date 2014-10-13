@@ -43,7 +43,7 @@ DB.prototype = {
 
 	journalEntries: function(id) {
 		var id = toInt(id);
-		var q = this.conn.query('SELECT conto.id as conto_id, conto.nome as conto_nome, riga.*, riga.dare::money::numeric::float8 as dareval, riga.avere::money::numeric::float8 as avereval FROM riga JOIN conto ON (conto.id = riga.conto) WHERE riga.partita = '+id+' ORDER BY riga.dare DESC, riga.avere');
+		var q = this.conn.query('SELECT conto.id as conto_id, conto.nome as conto_nome, riga.* FROM riga JOIN conto ON (conto.id = riga.conto) WHERE riga.partita = '+id+' ORDER BY riga.dare DESC, riga.avere');
 		return q.rows;
 	},
 };
@@ -52,7 +52,8 @@ module.exports = function(config) {
 	return function (f) {
 		Future.task(function() {
 				var conn = pg.connect(config.db);
-				conn.client.query('SET search_path to luca');
+				conn.client.query("SET search_path to luca");
+				conn.client.query("SET lc_monetary to 'C'");
 				var db = new DB(conn.client);
 				f(db);
 				conn.done ();

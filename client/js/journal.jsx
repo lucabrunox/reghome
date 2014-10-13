@@ -18,35 +18,43 @@ var EInput = Editable.Input;
 
 var JournalEntry = React.createClass({
 	onDebitSave: function(val) {
-		console.log ("debit save", val);
+		// optimistic update
+		var num = parseFloat(Util.toFloat(val).toPrecision(12)).toFixed(2);
+		var data = React.addons.update (this.props.data, { dare: {$set: num}});
+		this.props.onChange (data);
 	},
 
 	onCreditSave: function(val) {
-		console.log ("credit save", val);
+		// optimistic update
+		var num = parseFloat(Util.toFloat(val).toPrecision(12)).toFixed(2);
+		var data = React.addons.update (this.props.data, { avere: {$set: num}});
+		this.props.onChange (data);
 	},
 
 	onNotesSave: function(val) {
-		console.log ("notes save", val);
+		var data = React.addons.update (this.props.data, { note: {$set: val}});
+		this.props.onChange (data);
 	},
 	
 	render: function() {
 		var data = this.props.data;
+		
 		var ledgerHref = "/ledger/"+data.conto_id;
 		var preInput = <span className="input-group-addon">&euro;</span>;
-		var dare = data.dareval == 0 ? <span className="text-muted">-</span> : data.dare;
-		var avere = data.avereval == 0 ? <span className="text-muted">-</span> : data.avere;
+		var dare = data.dare == 0 ? <span className="text-muted">-</span> : "€ "+data.dare;
+		var avere = data.avere == 0 ? <span className="text-muted">-</span> : "€ "+data.avere;
 		var note = data.note ? data.note : <span className="text-muted">-</span>;
 		
 		return (
 			<tr>
 		  <td className="col-md-3"><Link href={ledgerHref}>{data.conto_nome}</Link></td>
 			<td className="col-md-2">
-				<EInput className="form-control" defaultValue={data.dare.substring(1).trim()} onSave={this.onDebitSave} preInput={preInput}>
+				<EInput className="form-control" defaultValue={data.dare} onSave={this.onDebitSave} preInput={preInput}>
 					{dare}
 				</EInput>
 			</td>
 			<td className="col-md-2">
-			  <EInput className="form-control" defaultValue={data.avere.substring(1).trim()} onSave={this.onCreditSave} preInput={preInput}>
+			  <EInput className="form-control" defaultValue={data.avere} onSave={this.onCreditSave} preInput={preInput}>
 					{avere}
 				</EInput>
 			</td>
@@ -67,21 +75,30 @@ var JournalDate = React.createClass({
 		return { expanded: false, data: [] };
 	},
 
-	shouldComponentUpdate: function(props, state) {
-		return this.state.expanded != state.expanded;
-	},
-	
 	handleClick: function() {
 		if (this.state.expanded) {
 			this.setState ({ expanded: false });
 		} else {
-			var self = this;
 			this.ajaxState ("/api/journal/"+this.props.data.id, function(data) {
-					data.expanded = true;
+				data.expanded = true;
 			});
 		}
 	},
-		
+
+	handleChange: function(id) {
+		var self = this;
+		return function(newdata) {
+			var data = self.state.data.slice();
+			for (var i=0; i < data.length; i++) {
+				if (data[i].id == id) {
+					data[i] = newdata;
+					self.setState ({ data: data });
+					break;
+				}
+			}
+		};
+	},
+	
 	render: function() {
 		var data = this.props.data;
 		var head =
@@ -91,10 +108,16 @@ var JournalDate = React.createClass({
 			</tr>;
 
 		if (this.state.expanded) {
-			var rows = this.state.data.map (function (row) { return <JournalEntry key={row.id} data={row} />; });
+			var balance = 0;
+			var self = this;
+			var rows = this.state.data.map (function (row) {
+					balance += row.avere - row.dare;
+					return <JournalEntry key={row.id} data={row} onChange={self.handleChange(row.id)} />;
+			});
+			var cls = balance != 0 ? "warning" : null;
 
 			return (
-				<tr><td colSpan="2" className="col-md-12 td-nested">
+				<tr className={cls}><td colSpan="2" className="col-md-12 td-nested">
 				  <table className="table-nested table-striped table-condensed">
 					{head}
 					{rows}

@@ -43,3 +43,8 @@ body {
 .table .form-inline {
 	margin-bottom: 0;
 }
+
+.table-striped > tbody > tr.warning > td > .table-nested > tbody > tr:not(:first-child) > td {
+	@include transition(background-color 1s ease);
+  background-color: $state-danger-bg !important;
+}

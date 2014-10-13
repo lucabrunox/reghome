@@ -33,5 +33,13 @@ module.exports = {
 			return d || 0;
 		}
 		return i;
+	},
+
+	toFloat: function (x, d) {
+		var i = parseFloat(x);
+		if (isNaN(i)) {
+			return d || 0.0;
+		}
+		return i;
 	}
 };
