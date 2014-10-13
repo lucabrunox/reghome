@@ -3,6 +3,7 @@ querystring = require("querystring");
 module.exports = {
 	ajaxState: function(url, cb) {
 		$.ajax({
+				type: "GET",
 				url: url,
 				dataType: 'json',
 				success: function(data) {
@@ -18,6 +19,15 @@ module.exports = {
 		});
 	},
 
+	ajaxPost: function(url, data) {
+		$.ajax({
+				type: "POST",
+				url: url,
+				data: JSON.stringify(data),
+				contentType: "application/json;charset=utf-8",
+		});
+	},
+	
 	getQuery: function(x) {
 		var q = querystring.decode (location.search.substring(1));
 		if (!x) {

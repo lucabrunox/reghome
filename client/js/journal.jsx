@@ -93,6 +93,7 @@ var JournalDate = React.createClass({
 				if (data[i].id == id) {
 					data[i] = newdata;
 					self.setState ({ data: data });
+					Util.ajaxPost ("/api/journal/entry", newdata);
 					break;
 				}
 			}

@@ -5,6 +5,7 @@ if (process.argv.length < 3) {
 
 var config = require(process.argv[2]);
 var express = require('express');
+var bodyParser = require('body-parser');
 var path = require('path');
 var dbconn = require('./db')(config);
 
@@ -37,21 +38,27 @@ app.enable('trust proxy');
 
 app.use("/assets", express.static (config.staticDir));
 
+app.use("/api", bodyParser.json());
+
 app.get("/api/journal", function(req, res, next) {
 		wrapdb(res, function (db) {
-			var data = db.journal ({ page: req.query.page, count: 10 });
+			var data = db.getJournal ({ page: req.query.page, count: 10 });
 			return data;
 		});
 });
 
 app.get("/api/journal/:id", function(req, res, next) {
 		wrapdb(res, function (db) {
-			var data = db.journalEntries (req.params.id);
+			var data = db.getJournalEntries (req.params.id);
 			return data;
 		});
 });
 
-/* app.get("/api/*", function( */
+app.post("/api/journal/entry", function(req, res, next) {
+		wrapdb(res, function (db) {
+			db.setJournalEntry (req.body);
+		});
+});
 
 app.use('/api', function(req, res, next) {
 		res.status(404).send({ error: 'Not found' });
