@@ -1,0 +1,59 @@
+@import 'bootstrap/variables';
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+@import 'bootstrap';
+
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+}
+
+/*
+ * Main content
+ */
+
+.main {
+  margin-top: 20px;
+}
+
+.table-hover tbody tr:hover > td {
+  cursor: hand;
+}
+
+.table-nested {
+	@extend .table;
+	margin-bottom: 0;
+}
+
+.table-nested tbody tr:hover > td {
+  cursor: default;
+}
+
+.table-nested tbody tr:hover:first-child > td {
+  cursor: hand;
+}
+
+.table > tbody > tr > td.td-nested {
+	padding: 0;
+}
+
+.table .form-inline {
+	margin-bottom: 0;
+}
+
+.table-striped > tbody > tr.warning > td > .table-nested > tbody > tr:not(:first-child) > td {
+	@include transition(background-color 1s ease);
+  background-color: $state-danger-bg !important;
+}
+
+.calc-result {
+	min-width: 6em;
+	display: inline-block;
+	margin-top: 0.1px;
+	margin-bottom: 0;
+	padding: 6 6 6 6;
+	min-height: 20.4px;
+}

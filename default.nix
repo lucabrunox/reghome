@@ -35,53 +35,17 @@ let
                };
   config' = makeConfig config;
 
-  backendPackages = callPackage ./pkgs/node-packages.nix { self = nodePackages // backendPackages; };
+  deps = callPackage ./pkgs/node-packages.nix { self = nodePackages // deps; };
 
-  backendPackages' = lib.collect lib.isDerivation backendPackages;
-
-  sassWrapper = callPackage ./pkgs/sass-wrapper { sass = rubyLibs.sass; };
-
-  frontendPackages = {
-    reactjs = callPackage ./pkgs/reactjs.nix { };
-    bootstrap-sass = callPackage ./pkgs/bootstrap-sass.nix { };
-    jquery = callPackage ./pkgs/jquery.nix { };
-  };
-
-  frontendPackages' = lib.mapAttrs (_: value: value.${config'.flavor}) frontendPackages;
+  depsList = lib.collect lib.isDerivation deps;
 
   baseName = "${config'.projectName}-${config'.flavor}";
 
-  buildComponent = name: propagatedBuildInputs: installCommands:
-    stdenv.mkDerivation {
-      name = "${baseName}-${name}";
-
-      phases = [ "installPhase" ];
-      
-      inherit propagatedBuildInputs;
-      
-      installPhase = ''
-        mkdir $out
-        ${installCommands}
-      '';
-    };
-
-  components = with backendPackages; with frontendPackages'; rec {
-    
-    css = buildComponent "css" [ sassWrapper bootstrap-sass ] ''
-      scss ${./client}/scss/main.scss:$out/main.css
-    '';
-
-    js = buildComponent "js" ([ nodejs ] ++ backendPackages') ''
-      browserify -c jsx ${./client/js}/main.jsx > $out/bundle.js
-    '';
-
-    www = buildComponent "www" [] ''
-      mkdir -p $out/js/
-      ln -sv -T ${./client/index.html} $out/index.html
-      ln -sv -T ${css} $out/css
-      ln -sv ${js}/bundle.js $out/js/bundle.js
-    '';
-    
+  depsEnv = buildEnv {
+    name = "${baseName}-deps";
+    paths = depsList;
+    pathsToLink = [ "/lib/node_modules" ];
+    ignoreCollisions = true;
   };
 
   services = nix-rehash.reService {
@@ -95,15 +59,15 @@ let
     ];
   };
   
-in with backendPackages;
+in
 
 stdenv.mkDerivation ({
   name = "${baseName}";
-  buildInputs = [ sassWrapper nodejs ] ++ backendPackages' ++ lib.attrValues frontendPackages';
+  buildInputs = [ nodejs ] ++ depsList;
 
   NODE_ENV = lib.optionalString (config'.flavor == "dev") "development";
-  passthru = {
-    inherit (components) www js css;
-  };
+  passthru = { inherit depsEnv; };
+
+  inherit depsEnv;
   
-} // config' // frontendPackages')
+} // config')

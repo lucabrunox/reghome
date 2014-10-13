@@ -6,15 +6,26 @@ Simple home cash double entry
 Installation
 -----------
 
-Install nix.
+Install [Nix](www.nixos.org/nix).
 
 ```
 $ git clone https://github.com/lethalman/reghome.git
 $ cd reghome
 $ nix-shell
-$ services/postgres/init.sh start
-$ mkdir -p /home/luca/.reghome/nginx/logs
-$ services/nginx/init.sh
-$ forever start server/main.js $(pwd)/config.js
-$ ./watch.sh
 ```
+
+Build the web bundle:
+	
+```
+$ webpack
+```
+
+Start the services:
+	
+```
+$ mkdir -p ~/.reghome/nginx/logs
+$ services/nginx/init.sh
+$ node server/main.js $(pwd)/config.js
+```
+
+Open http://localhost:8080
