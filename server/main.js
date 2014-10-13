@@ -3,10 +3,18 @@ if (process.argv.length < 3) {
 	process.exit(1);
 }
 
-var config = require(process.argv[2]);
+var path = require('path');
+
+var workdir = process.cwd();
+var configPath = path.resolve(workdir, process.argv[2]);
+var config = require(configPath);
+console.log ("Loaded config from ", configPath);
+
+var staticDir = path.resolve (path.dirname (configPath), config.staticDir);
+console.log ("Serving root ", staticDir);
+
 var express = require('express');
 var bodyParser = require('body-parser');
-var path = require('path');
 var dbconn = require('./db')(config);
 
 function wrapdb(res, f) {
@@ -36,7 +44,7 @@ var app = express();
 
 app.enable('trust proxy');
 
-app.use("/assets", express.static (config.staticDir));
+app.use("/assets", express.static (staticDir));
 
 app.use("/api", bodyParser.json());
 
@@ -65,7 +73,7 @@ app.use('/api', function(req, res, next) {
 });
 
 app.get("/*", function(req, res, next) {
-		res.sendFile (path.resolve (config.staticDir, "./index.html"));
+		res.sendFile (path.resolve (staticDir, "./index.html"));
 });
 
 app.listen(config.bindPort, function() {

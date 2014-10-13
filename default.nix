@@ -1,37 +1,19 @@
 { pkgs ? (import <nixpkgs> {})
 , config ? {}
-, nix-rehash ? import (if (builtins.tryEval <nix-rehash>).success then <nix-rehash> else ./nix-rehash)
+, nix-rehash ? import <nix-rehash>
 }:
 
 with pkgs;
 let
 
-  defaultPostgresConfig = pkgs.substituteAll {
-    name = "postgres-config";
-    src = ./services/postgres/postgresql.conf;
-    hbaFile = ./services/postgres/pg_hba.conf;
-    identFile = ./services/postgres/pg_ident.conf;
-  };
-
   default = x: def: if x == null then def else x;
   
   makeConfig = { projectName ? "reghome",
                  flavor ? "dev",
-                 nginx ? pkgs.nginx,
-                 dataDir ? null,
-                 nginxConfigFile ? ./services/nginx/nginx.conf,
-                 nginxExtraFlags ? null,
-                 postgresql ? pkgs.postgresql93,
-                 postgresDataDir ? null,
-                 postgresFlags ? "",
-                 postgresConfigFile ? defaultPostgresConfig }:
+                 dataDir ? null }:
                {
-                 inherit projectName flavor
-                 nginx nginxConfigFile
-                 postgresql postgresConfigFile postgresFlags;
-                 dataDir = default dataDir ((builtins.getEnv "HOME")+"/.${projectName}");
-                 nginxExtraFlags = default nginxExtraFlags "-p $HOME/.${projectName}/nginx";
-                 postgresDataDir = default postgresDataDir "$HOME/.${projectName}/postgres/data";
+                 inherit projectName flavor;
+                 dataDir = default dataDir ((builtins.getEnv "HOME") + "/.${projectName}/");
                };
   config' = makeConfig config;
 
@@ -77,7 +59,7 @@ let
           '';
 
           supervisord.services.node = {
-            command = "${nodejs}/bin/node ${./server}/main.js ${./server}/config.json";
+            command = "${nodejs}/bin/node ${./server}/main.js %(ENV_PWD)s/config.json";
           };
           
           supervisord.stateDir = "${config'.dataDir}/supervisor";
