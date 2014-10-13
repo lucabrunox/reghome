@@ -20,7 +20,7 @@ var dbconn = require('./db')(config);
 function wrapdb(res, f) {
 	return dbconn(function() {
 		try {
-			return res.send({ data: f.apply(null, arguments) });
+			return res.send(f.apply(null, arguments));
 		} catch (err) {
 			console.log(err.message);
 			return res.status(500).send({ error: err.message });

@@ -19,9 +19,13 @@ body {
   margin-top: 20px;
 }
 
+/* table hover with hand cursor */
+
 .table-hover tbody tr:hover > td {
   cursor: hand;
 }
+
+/* nested table */
 
 .table-nested {
 	@extend .table;
@@ -44,10 +48,14 @@ body {
 	margin-bottom: 0;
 }
 
+/* table error */
+
 .table-striped > tbody > tr.warning > td > .table-nested > tbody > tr:not(:first-child) > td {
 	@include transition(background-color 1s ease);
   background-color: $state-danger-bg !important;
 }
+
+/* calculator result */
 
 .calc-result {
 	min-width: 6em;
@@ -56,4 +64,62 @@ body {
 	margin-bottom: 0;
 	padding: 6 6 6 6;
 	min-height: 20.4px;
+}
+
+/* icon opacity on hover */
+
+.icon-hover {
+	@include opacity(0.2);
+}
+
+.icon-hover:hover {
+	@include opacity(1);
+	@include transition(opacity 0.3s ease);
+	cursor: hand;
+}
+
+/* typeahead */
+
+.typeahead {
+	@extend .form-group-sm;
+	padding: 0;
+	position: absolute;
+	margin-top: -15px;
+	z-index: 10;
+}
+
+.typeahead-results {
+	@extend .list-group;
+}
+
+.typeahead-item {
+	@extend .list-group-item;
+}
+
+.typeahead-item a {
+	@extend .btn;
+}
+
+li.typeahead-item {
+	/* same padding of input box */
+	padding: 5px 10px;
+}
+
+li.typeahead-item a {
+	@extend .btn-sm;
+	height: inherit;
+	text-align: left;
+	padding: 0;
+}
+
+li.typeahead-item:hover {
+	cursor: hand;
+}
+
+.typeahead-input {
+	@extend .form-control;
+}
+
+.typeahead .typeahead-input {
+	@extend .input-sm;
 }

@@ -46,13 +46,14 @@ DB.prototype = {
 	getJournal: function(pager) {
 		var pager = sanitizePager (pager);
 		var q = this.conn.query('SELECT * from partita order by data desc offset '+((pager.page-1)*pager.count)+' limit '+(pager.count));
-		return q.rows;
+		return { data: q.rows };
 	},
 
 	getJournalEntries: function(id) {
 		var id = toInt(id);
 		var q = this.conn.query('SELECT conto.id as conto_id, conto.nome as conto_nome, riga.* FROM riga JOIN conto ON (conto.id = riga.conto) WHERE riga.partita = '+id+' ORDER BY riga.dare DESC, riga.avere');
-		return q.rows;
+		var ac = this.conn.query('SELECT conto.id, conto.nome FROM conto ORDER BY nome');
+		return { data: q.rows, accounts: ac.rows };
 	},
 
 	setJournalEntry: function(data) {

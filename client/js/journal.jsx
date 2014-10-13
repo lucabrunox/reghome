@@ -15,6 +15,7 @@ var querystring = require('querystring');
 
 var Link = SimpleRouter.Link;
 var EInput = Editable.Input;
+var ECombo = Editable.Combo;
 
 var JournalEntry = React.createClass({
 	onDebitSave: function(val) {
@@ -35,19 +36,28 @@ var JournalEntry = React.createClass({
 		var data = React.addons.update (this.props.data, { note: {$set: val}});
 		this.props.onChange (data);
 	},
+
+	onContoSave: function(val) {
+		console.log(val);
+	},
 	
 	render: function() {
 		var data = this.props.data;
 		
 		var ledgerHref = "/ledger/"+data.conto_id;
 		var preInput = <span className="input-group-addon">&euro;</span>;
+
 		var dare = data.dare == 0 ? <span className="text-muted">-</span> : "€ "+data.dare;
 		var avere = data.avere == 0 ? <span className="text-muted">-</span> : "€ "+data.avere;
 		var note = data.note ? data.note : <span className="text-muted">-</span>;
-		
+
 		return (
 			<tr>
-		  <td className="col-md-3"><Link href={ledgerHref}>{data.conto_nome}</Link></td>
+		  <td className="col-md-3">
+			  <ECombo placeholder="Account name" options={["foo", "bar", "baz"]} maxVisible={2} onSave={this.onAccountSave}>
+			    <Link href={ledgerHref}>{data.conto_nome}</Link>
+				</ECombo>
+			</td>
 			<td className="col-md-2">
 				<EInput className="form-control" defaultValue={data.dare} onSave={this.onDebitSave} preInput={preInput}>
 					{dare}

@@ -5,6 +5,44 @@
 
 var React = require('react');
 React.addons = require('react/addons').addons;
+var Typeahead = require('react-typeahead').Typeahead;
+
+var Combo = React.createClass({
+	getInitialState: function () {
+		return { editing: false };
+	},
+
+	componentDidMount: function() {
+	},
+
+	handleEdit: function() {
+		this.setState ({ editing: true });
+	},
+	
+	handleSelected: function() {
+		this.setState ({ editing: false });
+	},
+	
+	render: function() {
+		if (!this.state.editing) {
+			return (
+				<div style={{position: "relative"}}>
+					{this.props.children}
+					<span onClick={this.handleEdit} className="glyphicon glyphicon-edit pull-right icon-hover"></span>
+				</div>
+			);
+		} else {
+			var typeaheadClasses = {
+				input: "typeahead-input",
+				results: "typeahead-results",
+				listItem: "typeahead-item",
+				listAnchor: "typeahead-anchor"
+			};
+		
+			return this.transferPropsTo (<Typeahead ref="combo" customClasses={typeaheadClasses} onOptionSelected={this.handleSelected} />);
+		}
+	}
+});
 
 var Input = React.createClass({
 	getInitialState: function() {
@@ -71,5 +109,6 @@ var Input = React.createClass({
 });
 
 module.exports = {
-	Input: Input
+	Input: Input,
+	Combo: Combo
 };

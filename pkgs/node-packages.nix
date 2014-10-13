@@ -2047,6 +2047,26 @@
     ];
     passthru.names = [ "fresh" ];
   };
+  by-spec."fuzzy"."^0.1.0" =
+    self.by-version."fuzzy"."0.1.0";
+  by-version."fuzzy"."0.1.0" = lib.makeOverridable self.buildNodePackage {
+    name = "fuzzy-0.1.0";
+    bin = false;
+    src = [
+      (fetchurl {
+        url = "http://registry.npmjs.org/fuzzy/-/fuzzy-0.1.0.tgz";
+        name = "fuzzy-0.1.0.tgz";
+        sha1 = "f9c8116df510969454ed9ab3824cdfb520eafc63";
+      })
+    ];
+    buildInputs =
+      (self.nativeDeps."fuzzy" or []);
+    deps = {
+    };
+    peerDependencies = [
+    ];
+    passthru.names = [ "fuzzy" ];
+  };
   by-spec."generic-pool"."2.1.1" =
     self.by-version."generic-pool"."2.1.1";
   by-version."generic-pool"."2.1.1" = lib.makeOverridable self.buildNodePackage {
@@ -3357,7 +3377,7 @@
       "os-browserify-0.1.2" = self.by-version."os-browserify"."0.1.2";
       "path-browserify-0.0.0" = self.by-version."path-browserify"."0.0.0";
       "domain-browser-1.1.3" = self.by-version."domain-browser"."1.1.3";
-      "querystring-es3-0.2.1-0" = self.by-version."querystring-es3"."0.2.1-0";
+      "querystring-es3-0.2.1" = self.by-version."querystring-es3"."0.2.1";
       "timers-browserify-1.1.0" = self.by-version."timers-browserify"."1.1.0";
       "stream-browserify-1.0.0" = self.by-version."stream-browserify"."1.0.0";
       "readable-stream-1.1.13" = self.by-version."readable-stream"."1.1.13";
@@ -4188,15 +4208,15 @@
   };
   "querystring" = self.by-version."querystring"."0.2.0";
   by-spec."querystring-es3"."~0.2.0" =
-    self.by-version."querystring-es3"."0.2.1-0";
-  by-version."querystring-es3"."0.2.1-0" = lib.makeOverridable self.buildNodePackage {
-    name = "querystring-es3-0.2.1-0";
+    self.by-version."querystring-es3"."0.2.1";
+  by-version."querystring-es3"."0.2.1" = lib.makeOverridable self.buildNodePackage {
+    name = "querystring-es3-0.2.1";
     bin = false;
     src = [
       (fetchurl {
-        url = "http://registry.npmjs.org/querystring-es3/-/querystring-es3-0.2.1-0.tgz";
-        name = "querystring-es3-0.2.1-0.tgz";
-        sha1 = "bd38cbd701040e7ef66c94a93db4a5b45be39565";
+        url = "http://registry.npmjs.org/querystring-es3/-/querystring-es3-0.2.1.tgz";
+        name = "querystring-es3-0.2.1.tgz";
+        sha1 = "9ec61f79049875707d69414596fd907a4d711e73";
       })
     ];
     buildInputs =
@@ -4291,6 +4311,8 @@
     passthru.names = [ "react" ];
   };
   "react" = self.by-version."react"."0.11.2";
+  by-spec."react"."^0.11.0" =
+    self.by-version."react"."0.11.2";
   by-spec."react"."~0.11.0" =
     self.by-version."react"."0.11.2";
   by-spec."react-async"."*" =
@@ -4344,6 +4366,29 @@
     self.by-version."react-tools"."0.11.2";
   by-spec."react-tools"."~0.11.0" =
     self.by-version."react-tools"."0.11.2";
+  by-spec."react-typeahead"."*" =
+    self.by-version."react-typeahead"."1.0.0";
+  by-version."react-typeahead"."1.0.0" = lib.makeOverridable self.buildNodePackage {
+    name = "react-typeahead-1.0.0";
+    bin = false;
+    src = [
+      (fetchurl {
+        url = "http://registry.npmjs.org/react-typeahead/-/react-typeahead-1.0.0.tgz";
+        name = "react-typeahead-1.0.0.tgz";
+        sha1 = "d4598fbd67c71debd838b858dcf5dc8fcc48b690";
+      })
+    ];
+    buildInputs =
+      (self.nativeDeps."react-typeahead" or []);
+    deps = {
+      "fuzzy-0.1.0" = self.by-version."fuzzy"."0.1.0";
+      "react-0.11.2" = self.by-version."react"."0.11.2";
+    };
+    peerDependencies = [
+    ];
+    passthru.names = [ "react-typeahead" ];
+  };
+  "react-typeahead" = self.by-version."react-typeahead"."1.0.0";
   by-spec."read"."1.0.x" =
     self.by-version."read"."1.0.5";
   by-version."read"."1.0.5" = lib.makeOverridable self.buildNodePackage {
