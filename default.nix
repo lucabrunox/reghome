@@ -1,4 +1,7 @@
-{ pkgs ? (import <nixpkgs> {}), config ? {} }:
+{ pkgs ? (import <nixpkgs> {})
+, config ? {}
+, nix-rehash ? import <nix-rehash>
+}:
 
 with pkgs;
 let
@@ -15,6 +18,7 @@ let
   makeConfig = { projectName ? "reghome",
                  flavor ? "dev",
                  nginx ? pkgs.nginx,
+                 dataDir ? null,
                  nginxConfigFile ? ./services/nginx/nginx.conf,
                  nginxExtraFlags ? null,
                  postgresql ? pkgs.postgresql93,
@@ -25,6 +29,7 @@ let
                  inherit projectName flavor
                  nginx nginxConfigFile
                  postgresql postgresConfigFile postgresFlags;
+                 dataDir = default dataDir ((builtins.getEnv "HOME")+"/.${projectName}");
                  nginxExtraFlags = default nginxExtraFlags "-p $HOME/.${projectName}/nginx";
                  postgresDataDir = default postgresDataDir "$HOME/.${projectName}/postgres/data";
                };
@@ -78,6 +83,18 @@ let
     '';
     
   };
+
+  services = nix-rehash.reService {
+    name = "${baseName}-services";
+    configuration = let servicePrefix = "/tmp/${projectName}/services"; in [
+      ({ config, pkgs, ...}: {
+          services.postgresql.enable = true;
+          services.postgresql.package = pkgs.postgresql93;
+          services.postgresql.dataDir = "${config'.dataDir}/postgresql";
+      })
+    ];
+  };
+  
 in with backendPackages;
 
 stdenv.mkDerivation ({
