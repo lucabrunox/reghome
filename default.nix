@@ -55,6 +55,31 @@ let
           services.postgresql.enable = true;
           services.postgresql.package = pkgs.postgresql93;
           services.postgresql.dataDir = "${config'.dataDir}/postgresql";
+
+          services.nginx.enable = true;
+          services.nginx.stateDir = "${config'.dataDir}/nginx";
+          services.nginx.user = builtins.getEnv "USER";
+          services.nginx.group = builtins.getEnv "USER";
+          services.nginx.httpConfig = ''
+          	server {
+              listen 0.0.0.0:8080;
+		
+              location / {
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header Host $http_host;
+                proxy_set_header X-NginX-Proxy true;
+			
+                proxy_pass http://localhost:9090/;
+                proxy_redirect off;
+              }
+            }
+          '';
+
+          supervisord.services.node = {
+            command = "${nodejs}/bin/node ${./server}/main.js ${./server}/config.json";
+          };
+          
           supervisord.stateDir = "${config'.dataDir}/supervisor";
       })
     ];
