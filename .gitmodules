@@ -1,3 +1,0 @@
-[submodule "nix-rehash"]
-	path = nix-rehash
-	url = https://github.com/kiberpipa/nix-rehash.git

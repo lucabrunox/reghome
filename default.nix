@@ -1,6 +1,6 @@
 { pkgs ? (import <nixpkgs> {})
 , config ? {}
-, nix-rehash ? import <nix-rehash>
+, nix-rehash ? import (if (builtins.tryEval <nix-rehash>).success then <nix-rehash> else ./nix-rehash)
 }:
 
 with pkgs;
@@ -49,21 +49,24 @@ let
   };
 
   services = nix-rehash.reService {
-    name = "${baseName}-services";
-    configuration = let servicePrefix = "/tmp/${projectName}/services"; in [
+    name = baseName;
+    configuration = [
       ({ config, pkgs, ...}: {
           services.postgresql.enable = true;
           services.postgresql.package = pkgs.postgresql93;
           services.postgresql.dataDir = "${config'.dataDir}/postgresql";
+          supervisord.stateDir = "${config'.dataDir}/supervisor";
       })
     ];
   };
+
+  cfg = services.config;
   
 in
 
 stdenv.mkDerivation ({
   name = "${baseName}";
-  buildInputs = [ nodejs ] ++ depsList;
+  buildInputs = [ nodejs cfg.supervisord.bin cfg.services.postgresql.package ] ++ depsList;
 
   NODE_ENV = lib.optionalString (config'.flavor == "dev") "development";
   passthru = { inherit depsEnv; };
