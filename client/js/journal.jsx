@@ -67,7 +67,7 @@ var JournalEntry = React.createClass({
 		return (
 			<tr>
 		  <td className="col-md-3">
-			  <ECombo placeholder="Account name" options={options} maxVisible={2} onSelected={this.onAccountSave}>
+			  <ECombo placeholder={data.conto_nome} options={options} maxVisible={2} onSelected={this.onAccountSave}>
 			    <Link href={ledgerHref}>{data.conto_nome}</Link>
 				</ECombo>
 			</td>
