@@ -128,7 +128,7 @@ var JournalDate = React.createClass({
 		var data = this.props.data;
 		var head =
 		  <tr onClick={this.handleClick}>
-			<td className="col-md-3">{data.data}</td>
+			<td className="col-md-3">{new Date(parseInt(data.timestamp)).toLocaleString()}</td>
 			<td colSpan={this.state.expanded ? 3 : 1} className="col-md-9">{data.note}</td>
 			</tr>;
 

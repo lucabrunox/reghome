@@ -45,7 +45,7 @@ var DB = function(conn) {
 DB.prototype = {
 	getJournal: function(pager) {
 		var pager = sanitizePager (pager);
-		var q = this.conn.query('SELECT * from partita order by data desc offset '+((pager.page-1)*pager.count)+' limit '+(pager.count));
+		var q = this.conn.query('SELECT id, note, (extract(epoch from data)*1000)::bigint as timestamp from partita order by data desc offset '+((pager.page-1)*pager.count)+' limit '+(pager.count));
 		return { data: q.rows };
 	},
 
