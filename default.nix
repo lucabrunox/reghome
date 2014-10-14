@@ -59,7 +59,13 @@ let
           '';
 
           supervisord.services.node = {
-            command = "${nodejs}/bin/node %(ENV_PWD)s/server/main.js %(ENV_PWD)s/config.json";
+            directory = "%(ENV_PWD)s";
+            command = "${nodejs}/bin/node ./server/main.js ./config.json";
+          };
+
+          supervisord.services.webpack = {
+            directory = "%(ENV_PWD)s";
+            command = "${deps.webpack}/bin/webpack --watch -d";
           };
           
           supervisord.stateDir = "${config'.dataDir}/supervisor";
