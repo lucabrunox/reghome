@@ -1,6 +1,23 @@
 querystring = require("querystring");
 
 module.exports = {
+	findIndex: function(arr, func) {
+		for (var i=0; i < arr.length; i++) {
+			if (func(arr[i])) {
+				return i;
+			}
+		}
+		
+		return -1;
+	},
+
+	findElement: function(arr, func) {
+		var i = this.findIndex(arr, func);
+		if (i >= 0) {
+			return arr[i];
+		}
+	},
+	
 	ajaxState: function(url, cb) {
 		$.ajax({
 				type: "GET",

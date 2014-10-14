@@ -59,11 +59,11 @@ DB.prototype = {
 	setJournalEntry: function(data) {
 		var id = toInt(data.id);
 		if (id > 0) {
-			this.conn.query('UPDATE riga SET dare = $1, avere = $2, note = $3 WHERE id = $4',
-											[toFloat(data.dare), toFloat(data.avere), data.note, id]);
+			this.conn.query('UPDATE riga SET dare = $1, avere = $2, note = $3, conto = $4 WHERE id = $5',
+											[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id, id]);
 		} else {
-			this.conn.query('INSERT INTO riga SET dare = $1, avere = $2, note = $3',
-											[toFloat(data.dare), toFloat(data.avere), data.note]);
+			this.conn.query('INSERT INTO riga SET dare = $1, avere = $2, note = $3, conto = $4',
+											[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id]);
 		}
 	},
 };

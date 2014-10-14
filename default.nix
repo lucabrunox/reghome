@@ -59,7 +59,7 @@ let
           '';
 
           supervisord.services.node = {
-            command = "${nodejs}/bin/node ${./server}/main.js %(ENV_PWD)s/config.json";
+            command = "${nodejs}/bin/node %(ENV_PWD)s/server/main.js %(ENV_PWD)s/config.json";
           };
           
           supervisord.stateDir = "${config'.dataDir}/supervisor";

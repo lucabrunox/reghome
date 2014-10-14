@@ -39,10 +39,23 @@ var JournalEntry = React.createClass({
 
 	onAccountSave: function(val) {
 		console.log(val);
+		var ac = Util.findElement (this.props.accounts, function(ac) {
+				return ac.nome === val;
+		});
+
+		if (ac) {
+			var data = React.addons.update (this.props.data,
+																			{ conto_id: {$set: ac.id},
+																				conto_nome: {$set: ac.nome} });
+			this.props.onChange (data);
+		}
 	},
 	
 	render: function() {
 		var data = this.props.data;
+		var options = this.props.accounts.map(function(ac) {
+				return ac.nome;
+		});
 		
 		var ledgerHref = "/ledger/"+data.conto_id;
 		var preInput = <span className="input-group-addon">&euro;</span>;
@@ -54,7 +67,7 @@ var JournalEntry = React.createClass({
 		return (
 			<tr>
 		  <td className="col-md-3">
-			  <ECombo placeholder="Account name" options={["foo", "bar", "baz"]} maxVisible={2} onSelected={this.onAccountSave}>
+			  <ECombo placeholder="Account name" options={options} maxVisible={2} onSelected={this.onAccountSave}>
 			    <Link href={ledgerHref}>{data.conto_nome}</Link>
 				</ECombo>
 			</td>
@@ -98,14 +111,15 @@ var JournalDate = React.createClass({
 	handleChange: function(id) {
 		var self = this;
 		return function(newdata) {
-			var data = self.state.data.slice();
-			for (var i=0; i < data.length; i++) {
-				if (data[i].id == id) {
-					data[i] = newdata;
-					self.setState ({ data: data });
-					Util.ajaxPost ("/api/journal/entry", newdata);
-					break;
-				}
+			var i = Util.findIndex (self.state.data, function(row) {
+					return row.id === id;
+			});
+			
+			if (i >= 0) {
+				var data = self.state.data.slice();
+				data[i] = newdata;
+				self.setState ({ data: data });
+				Util.ajaxPost ("/api/journal/entry", newdata);
 			}
 		};
 	},
@@ -123,7 +137,7 @@ var JournalDate = React.createClass({
 			var self = this;
 			var rows = this.state.data.map (function (row) {
 					balance += row.avere - row.dare;
-					return <JournalEntry key={row.id} data={row} onChange={self.handleChange(row.id)} />;
+					return <JournalEntry key={row.id} data={row} accounts={self.state.accounts} onChange={self.handleChange(row.id)} />;
 			});
 			var cls = balance != 0 ? "warning" : null;
 
