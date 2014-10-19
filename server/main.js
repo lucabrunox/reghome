@@ -48,13 +48,36 @@ app.use("/assets", express.static (staticDir));
 
 app.use("/api", bodyParser.json());
 
-app.get("/api/journal", function(req, res, next) {
+
+// update entry
+app.post("/api/journal/entry", function(req, res, next) {
 		wrapdb(res, function (db) {
-			var data = db.getJournal ({ page: req.query.page, count: 10 });
-			return data;
+			db.setJournalEntry (req.body);
 		});
 });
 
+// delete date entry
+app.delete("/api/journal/:jdate/:id", function(req, res, next) {
+		wrapdb(res, function (db) {
+			db.deleteJournalEntry (req.params.jdate, req.params.id);
+		});
+});
+
+// new entry
+app.put("/api/journal/:id", function(req, res, next) {
+		wrapdb(res, function (db) {
+			db.newJournalEntry (req.params.id);
+		});
+});
+
+// delete date
+app.delete("/api/journal/:id", function(req, res, next) {
+		wrapdb(res, function (db) {
+			db.deleteJournal (req.params.id);
+		});
+});
+
+// get date entries
 app.get("/api/journal/:id", function(req, res, next) {
 		wrapdb(res, function (db) {
 			var data = db.getJournalEntries (req.params.id);
@@ -62,9 +85,18 @@ app.get("/api/journal/:id", function(req, res, next) {
 		});
 });
 
-app.post("/api/journal/entry", function(req, res, next) {
+// get dates
+app.get("/api/journal", function(req, res, next) {
 		wrapdb(res, function (db) {
-			db.setJournalEntry (req.body);
+			var data = db.getJournal ({ page: req.query.page, count: 10 });
+			return data;
+		});
+});
+
+// new date
+app.put("/api/journal", function(req, res, next) {
+		wrapdb(res, function (db) {
+			db.newJournal ();
 		});
 });
 

@@ -49,6 +49,38 @@ DB.prototype = {
 		return { data: q.rows };
 	},
 
+	newJournal: function() {
+		var ac = this.conn.query('SELECT conto.id, conto.nome FROM conto ORDER BY nome LIMIT 1');
+		
+		// create new jour
+		var q = this.conn.query('INSERT INTO partita (id) VALUES (DEFAULT) RETURNING id');
+		id = q.rows[0].id;
+
+		// set conto to the first account we have, it's safe as debit and credit are zero
+		var acid = ac.rows[0].id;
+		// two entries at least
+		this.conn.query('INSERT INTO riga (conto, partita) VALUES ($1, $2), ($1, $2)', [acid, id]);
+	},
+
+	deleteJournal: function(id) {
+		var id = toInt(id);
+		this.conn.query('DELETE FROM partita WHERE id=$1', [id]);
+	},
+
+	newJournalEntry: function(id) {
+		var id = toInt(id);
+		var ac = this.conn.query('SELECT conto.id, conto.nome FROM conto ORDER BY nome LIMIT 1');
+		// set conto to the first account we have, it's safe as debit and credit are zero
+		var acid = ac.rows[0].id;
+		this.conn.query('INSERT INTO riga (conto, partita) VALUES ($1, $2)', [acid, id]);
+	},
+
+	deleteJournalEntry: function(jdate, id) {
+		var partita = toInt(jdate);
+		var id = toInt(id);
+		this.conn.query('DELETE FROM riga WHERE partita=$1 AND id=$2', [jdate, id]);
+	},
+
 	getJournalEntries: function(id) {
 		var id = toInt(id);
 		var q = this.conn.query('SELECT conto.id as conto_id, conto.nome as conto_nome, riga.* FROM riga JOIN conto ON (conto.id = riga.conto) WHERE riga.partita = '+id+' ORDER BY riga.dare DESC, riga.avere');
@@ -57,15 +89,17 @@ DB.prototype = {
 	},
 
 	setJournalEntry: function(data) {
-		var id = toInt(data.id);
-		if (id > 0) {
-			this.conn.query('UPDATE riga SET dare = $1, avere = $2, note = $3, conto = $4 WHERE id = $5',
-											[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id, id]);
-		} else {
+		if (id === "new") {
 			this.conn.query('INSERT INTO riga SET dare = $1, avere = $2, note = $3, conto = $4',
 											[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id]);
+		} else {
+			var id = toInt(data.id);
+			if (id > 0) {
+				this.conn.query('UPDATE riga SET dare = $1, avere = $2, note = $3, conto = $4 WHERE id = $5',
+												[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id, id]);
+			}
 		}
-	},
+	}
 };
 
 module.exports = function(config) {

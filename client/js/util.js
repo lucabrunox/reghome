@@ -19,7 +19,7 @@ module.exports = {
 	},
 	
 	ajaxState: function(url, cb) {
-		$.ajax({
+		return $.ajax({
 				type: "GET",
 				url: url,
 				dataType: 'json',
@@ -36,12 +36,34 @@ module.exports = {
 		});
 	},
 
+	ajaxGet: function(url) {
+		return $.ajax({
+				type: "GET",
+				url: url,
+				dataType: 'json'
+		});
+	},
+
+	ajaxPut: function(url) {
+		return $.ajax({
+				type: "PUT",
+				url: url
+		});
+	},
+
+	ajaxDelete: function(url) {
+		return $.ajax({
+				type: "DELETE",
+				url: url
+		});
+	},
+		
 	ajaxPost: function(url, data) {
-		$.ajax({
+		return $.ajax({
 				type: "POST",
 				url: url,
 				data: JSON.stringify(data),
-				contentType: "application/json;charset=utf-8",
+				contentType: "application/json;charset=utf-8"
 		});
 	},
 	

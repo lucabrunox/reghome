@@ -50,7 +50,20 @@ var JournalEntry = React.createClass({
 			this.props.onChange (data);
 		}
 	},
-	
+
+	handleDelete: function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var self = this;
+		
+		Util.ajaxDelete ("/api/journal/"+this.props.data.partita+"/"+this.props.data.id).done (function() {
+				var node = self.getDOMNode();
+				React.unmountComponentAtNode(node);
+				$(node).remove();
+		});
+	},
+
 	render: function() {
 		var data = this.props.data;
 		var options = this.props.accounts.map(function(ac) {
@@ -84,6 +97,7 @@ var JournalEntry = React.createClass({
 			<td className="col-md-5">
 			  <EInput className="form-control" defaultValue={data.note} onSave={this.onNotesSave}>
 					{note}
+					<span onClick={this.handleDelete} className="glyphicon glyphicon-remove pull-right icon-hover" />
 				</EInput>
 			</td>
 			</tr>
@@ -98,14 +112,42 @@ var JournalDate = React.createClass({
 		return { expanded: false, data: [] };
 	},
 
+	isExpanded: function() {
+		return this.state.expanded;
+	},
+
+	expand: function() {
+		this.ajaxState ("/api/journal/"+this.props.data.id, function(data) {
+				data.expanded = true;
+		});
+	},
+
 	handleClick: function() {
 		if (this.state.expanded) {
 			this.setState ({ expanded: false });
 		} else {
-			this.ajaxState ("/api/journal/"+this.props.data.id, function(data) {
-				data.expanded = true;
-			});
+			this.expand ();
 		}
+	},
+
+	handleAdd: function() {
+		var self = this;
+		this.ajaxPut("/api/journal/"+this.props.data.id).done (function() {
+				self.expand();
+		});
+	},
+
+	handleDelete: function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var self = this;
+		
+		Util.ajaxDelete ("/api/journal/"+this.props.data.id).done (function() {
+				var node = self.getDOMNode();
+				React.unmountComponentAtNode(node);
+				$(node).remove();
+		});
 	},
 
 	handleChange: function(id) {
@@ -129,10 +171,13 @@ var JournalDate = React.createClass({
 		var head =
 		  <tr onClick={this.handleClick}>
 			<td className="col-md-3">{new Date(parseInt(data.timestamp)).toLocaleString()}</td>
-			<td colSpan={this.state.expanded ? 3 : 1} className="col-md-9">{data.note}</td>
+			<td colSpan={this.isExpanded() ? 3 : 1} className="col-md-9">
+				{data.note}
+				<span onClick={this.handleDelete} className="glyphicon glyphicon-remove pull-right icon-hover" />
+			</td>
 			</tr>;
 
-		if (this.state.expanded) {
+		if (this.isExpanded()) {
 			var balance = 0;
 			var self = this;
 			var rows = this.state.data.map (function (row) {
@@ -141,11 +186,19 @@ var JournalDate = React.createClass({
 			});
 			var cls = balance != 0 ? "warning" : null;
 
+			// tbody is necessary for reactjs to work properly
 			return (
 				<tr className={cls}><td colSpan="2" className="col-md-12 td-nested">
 				  <table className="table-nested table-striped table-condensed">
+					<tbody>
 					{head}
 					{rows}
+					<tr><td key="new" colSpan={4} className="text-center">
+						<button onClick={this.handleAdd} className="btn btn-sm text-muted">
+			  		<span className="glyphicon glyphicon-plus" /> Add new entry to this date
+						</button>
+					</td></tr>
+					</tbody>
 					</table>
 				</td></tr>
 			);
@@ -160,7 +213,7 @@ var JournalPage = React.createClass({
 	mixins: [Util],
 
 	getInitialState: function() {
-		return {};
+		return { }
 	},
 	
   componentWillMount: function() {
@@ -174,9 +227,16 @@ var JournalPage = React.createClass({
 	reloadData: function(props) {
 		this.ajaxState("/api/journal?page="+Util.toInt(props.route.query.page, 1));
 	},
+
+	handleAdd: function() {
+		var self = this;
+		this.ajaxPut("/api/journal").done (function() {
+				self.reloadData (self.props);
+		});
+	},
 	
   render: function() {
-		var loaded = !$.isEmptyObject (this.state);
+		var loaded = !$.isEmptyObject (this.state.data);
 		
 		var rows = [];
 		if (this.state.data) {
@@ -186,26 +246,38 @@ var JournalPage = React.createClass({
 		}
 
 		var pager = <Pager page={this.props.route.query.page} />;
+
+		var addItemHead; 
+		if (Util.toInt(this.props.route.query.page, 1) === 1) {
+			addItemHead = (
+				<tr><td key="new" colSpan={2} className="text-center">
+					<button onClick={this.handleAdd} className="btn btn-sm text-muted">
+			  	<span className="glyphicon glyphicon-plus" /> Add new journal date
+					</button>
+				</td></tr>
+			);
+		}
 		
     return (
 		  <div>
 		    <h2>Journal</h2>
 				<Loader loaded={loaded}>
 				<ErrorGuard error={this.state.error}>
-					<ResultGuard data={this.state.data}>
 					  <div>
 						{pager}
 						<table className="table table-striped table-hover table-condensed">
 							<thead>
 			 		 			<tr><th>Date</th><th>Notes</th></tr>
+								{addItemHead}
 							</thead>
-							<tbody>
-							{rows}
-							</tbody>
+							<ResultGuard data={this.state.data}>
+								<tbody>
+								{rows}
+								</tbody>
+							</ResultGuard>
 						</table>
 						{pager}
 						</div>
-					</ResultGuard>
 				</ErrorGuard>
 				</Loader>
 			</div>
