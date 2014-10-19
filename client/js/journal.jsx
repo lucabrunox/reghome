@@ -11,6 +11,7 @@ var ResultGuard = require('./emptyres.jsx');
 var Pager = require('./pager.jsx');
 var Loader = require('./loader.jsx');
 var Util = require('./util.js');
+var ConfirmDelete = require('./confirm.jsx');
 var querystring = require('querystring');
 
 var Link = SimpleRouter.Link;
@@ -51,10 +52,7 @@ var JournalEntry = React.createClass({
 		}
 	},
 
-	handleDelete: function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		
+	handleDelete: function() {
 		var self = this;
 		
 		Util.ajaxDelete ("/api/journal/"+this.props.data.partita+"/"+this.props.data.id).done (function() {
@@ -97,7 +95,9 @@ var JournalEntry = React.createClass({
 			<td className="col-md-5">
 			  <EInput className="form-control" defaultValue={data.note} onSave={this.onNotesSave}>
 					{note}
-					<span onClick={this.handleDelete} className="glyphicon glyphicon-remove pull-right icon-hover" />
+					<ConfirmDelete onDelete={this.handleDelete} className="pull-right">
+					<span className="glyphicon glyphicon-remove pull-right icon-hover" />
+					</ConfirmDelete>
 				</EInput>
 			</td>
 			</tr>
@@ -137,12 +137,8 @@ var JournalDate = React.createClass({
 		});
 	},
 
-	handleDelete: function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		
+	handleDelete: function() {
 		var self = this;
-		
 		Util.ajaxDelete ("/api/journal/"+this.props.data.id).done (function() {
 				var node = self.getDOMNode();
 				React.unmountComponentAtNode(node);
@@ -173,7 +169,9 @@ var JournalDate = React.createClass({
 			<td className="col-md-3">{new Date(parseInt(data.timestamp)).toLocaleString()}</td>
 			<td colSpan={this.isExpanded() ? 3 : 1} className="col-md-9">
 				{data.note}
-				<span onClick={this.handleDelete} className="glyphicon glyphicon-remove pull-right icon-hover" />
+				<ConfirmDelete onDelete={this.handleDelete} className="pull-right">
+				<span className="glyphicon glyphicon-remove pull-right icon-hover" />
+				</ConfirmDelete>
 			</td>
 			</tr>;
 
