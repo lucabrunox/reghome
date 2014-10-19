@@ -99,7 +99,14 @@ DB.prototype = {
 												[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id, id]);
 			}
 		}
-	}
+	},
+
+	/* Ledger and accounts */
+
+	getLedger: function() {
+		var q = this.conn.query('SELECT conto.id, conto.nome, sum(riga.dare) as dare, sum(riga.avere) as avere FROM conto JOIN riga ON (conto.id = riga.conto) GROUP BY conto.id, conto.nome');
+		return { data: q.rows };
+	},
 };
 
 module.exports = function(config) {

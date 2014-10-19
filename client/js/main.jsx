@@ -11,6 +11,7 @@ require('bootstrap');
 var querystring = require('querystring');
 
 var JournalPage = require('./journal.jsx');
+var LedgerPage = require('./ledger.jsx');
 var React = require('react');
 var SimpleRouter = require('./router.jsx');
 var Calculator = require('./calc.jsx');
@@ -26,18 +27,6 @@ var MainPage = React.createClass({
       <div className="MainPage">
         <h1>Hello, anonymous!</h1>
         <p><Link href="/login">Login</Link></p>
-      </div>
-    );
-  }
-
-});
-
-var LedgerPage = React.createClass({
-
-  render: function() {
-    return (
-      <div>
-        <h1>Ledger</h1>
       </div>
     );
   }
@@ -85,6 +74,7 @@ var App = React.createClass({
 <Router>
 	<Route path="^$"><MainPage key="mainpage" /></Route>
 	<Route path="^journal$"><JournalPage key="journalpage" /></Route>
+	<Route path="^ledger$"><LedgerPage key="ledgerpage" /></Route>
 </Router>
 </div>			
     );

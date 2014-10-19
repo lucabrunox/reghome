@@ -100,6 +100,14 @@ app.put("/api/journal", function(req, res, next) {
 		});
 });
 
+// ledger
+app.get("/api/ledger", function(req, res, next) {
+		wrapdb(res, function (db) {
+			var data = db.getLedger ();
+			return data;
+		});
+});
+
 app.use('/api', function(req, res, next) {
 		res.status(404).send({ error: 'Not found' });
 });
