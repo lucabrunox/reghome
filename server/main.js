@@ -85,6 +85,13 @@ app.get("/api/journal/:id", function(req, res, next) {
 		});
 });
 
+// update journal date
+app.post("/api/journal/:id", function(req, res, next) {
+		wrapdb(res, function (db) {
+			db.setJournal (req.body);
+		});
+});
+
 // get dates
 app.get("/api/journal", function(req, res, next) {
 		wrapdb(res, function (db) {

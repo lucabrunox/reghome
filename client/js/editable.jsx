@@ -67,6 +67,7 @@ var Input = React.createClass({
 
 	getDefaultProps: function() {
 		return {
+			useEditIcon: false,
 			onSave: function(val) { },
 			preInput: function() { return null; },
 		};
@@ -74,7 +75,9 @@ var Input = React.createClass({
 	
 	componentDidUpdate: function() {
 		if (this.state.editing) {
-			$(this.refs.input.getDOMNode()).focus();
+			var node = this.refs.input.getDOMNode();
+			$(node).focus();
+			this.refs.input.getDOMNode().setSelectionRange(0, $(node).val().length);
 		}
 	},
 
@@ -95,13 +98,27 @@ var Input = React.createClass({
 		this.setState ({ editing: false });
 	},
 
-	startEdit: function() {
+	startEdit: function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 		this.setState ({ editing: true });
 	},
 	
 	render: function() {
+		var noEdit;
+		if (this.props.useEditIcon) {
+			noEdit = (
+				<div className="inline-block">
+				{this.props.children}
+				&nbsp;<span onClick={this.startEdit} className="glyphicon glyphicon-edit icon-hover" />
+				</div>
+			);
+		} else {
+			noEdit = <div onClick={this.startEdit}>{this.props.children}</div>;
+		}
+		
 		if (!this.state.editing) {
-			return <div onClick={this.startEdit}>{this.props.children}</div>;
+			return noEdit;
 		} else {
 			var props = React.addons.update (this.props, { ref: {$set: "input"}});
 			delete props.preInput;
@@ -110,7 +127,7 @@ var Input = React.createClass({
 			var child = React.addons.cloneWithProps (<input onBlur={this.handleBlur} onKeyUp={this.handleKeyUp} />, props);
 
 			return (
-				<form className="form-inline" onSubmit={this.handleSave} role="form">
+				<form className="inline-block form-inline" onSubmit={this.handleSave} role="form">
 				<div className="form-group">
 					<div className="input-group">
 					  {this.props.preInput}

@@ -89,16 +89,15 @@ DB.prototype = {
 	},
 
 	setJournalEntry: function(data) {
-		if (id === "new") {
-			this.conn.query('INSERT INTO riga SET dare = $1, avere = $2, note = $3, conto = $4',
-											[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id]);
-		} else {
-			var id = toInt(data.id);
-			if (id > 0) {
-				this.conn.query('UPDATE riga SET dare = $1, avere = $2, note = $3, conto = $4 WHERE id = $5',
-												[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id, id]);
-			}
-		}
+		var id = toInt(data.id);
+		this.conn.query('UPDATE riga SET dare = $1, avere = $2, note = $3, conto = $4 WHERE id = $5',
+										[toFloat(data.dare), toFloat(data.avere), data.note, data.conto_id, id]);
+	},
+
+	setJournal: function(data) {
+		var id = toInt(data.id);
+		this.conn.query('UPDATE partita SET data = to_timestamp($1), note = $2 WHERE id = $3',
+										[toFloat(data.timestamp)/1000, data.note, id]);
 	},
 
 	/* Ledger and accounts */

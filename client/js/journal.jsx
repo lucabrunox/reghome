@@ -161,6 +161,12 @@ var JournalDate = React.createClass({
 			}
 		};
 	},
+
+	onNotesSave: function(newtext) {
+		var data = React.addons.update (this.props.data, {});
+		data.note = newtext;
+		this.props.onChange (data);
+	},
 	
 	render: function() {
 		var data = this.props.data;
@@ -168,9 +174,12 @@ var JournalDate = React.createClass({
 		  <tr onClick={this.handleClick}>
 			<td className="col-md-3">{new Date(parseInt(data.timestamp)).toLocaleString()}</td>
 			<td colSpan={this.isExpanded() ? 3 : 1} className="col-md-9">
-				{data.note}
+			  <EInput className="form-control" useEditIcon={true} defaultValue={data.note} onSave={this.onNotesSave}>
+					{data.note}
+				</EInput>
+				
 				<ConfirmDelete onDelete={this.handleDelete} className="pull-right">
-				<span className="glyphicon glyphicon-remove pull-right icon-hover" />
+					<span className="glyphicon glyphicon-remove pull-right icon-hover" />
 				</ConfirmDelete>
 			</td>
 			</tr>;
@@ -232,14 +241,31 @@ var JournalPage = React.createClass({
 				self.reloadData (self.props);
 		});
 	},
+
+	handleChange: function(id) {
+		var self = this;
+		return function(newdata) {
+			var i = Util.findIndex (self.state.data, function(row) {
+					return row.id === id;
+			});
+			
+			if (i >= 0) {
+				var data = self.state.data.slice();
+				data[i] = newdata;
+				self.setState ({ data: data });
+				Util.ajaxPost ("/api/journal/"+id, newdata);
+			}
+		};
+	},
 	
   render: function() {
 		var loaded = !$.isEmptyObject (this.state.data);
 		
 		var rows = [];
 		if (this.state.data) {
+			var self = this;
 			rows = this.state.data.map(function(row) {
-					return <JournalDate key={row.id} data={row} />;
+					return <JournalDate key={row.id} onChange={self.handleChange(row.id)} data={row} />;
 			});
 		}
 
